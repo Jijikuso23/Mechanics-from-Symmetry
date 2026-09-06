@@ -1,0 +1,623 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{physics}
+\newcommand{\qv}{\bm{q}}
+\newcommand{\La}{\mathcal{L}}
+\newcommand{\Laq}{\mathcal{L}(\qv(t),\dot{\qv}(t),t)}
+\newcommand{\intS}{\int_{t_i}^{t_f}dt}
+\newcommand{\ELeq}{\pdv{\Laq}{\qv(t)}-\frac{d}{dt}\pdv{\Laq}{\dot{\qv}(t)}}
+
+\title{対称性と作用原理から力学を構成する
+\\―Newton力学から特殊相対論へ―}
+\author{本間海斗}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+本記事はLagrange形式から古典力学、特殊相対論を構築することを
+目的とした。Lagrangianはよく天下り的に与えられ、既存の理論と整合するからという理由で
+終わることがある。しかし、それではLagrange形式の真価が発揮されていないと私は思う。
+
+この記事で主に次のことを意識した。\\
+1.Newtonの運動方程式を前提とせず、それとは独立に古典力学を構築すること。
+\\2.物理の本質部分からLagrangianを決定すること。
+\\この2つを意識した。そのため、記事の構成としてはまず、古典力学の根本となる基礎
+(前提)を明確にし、その上で対称性というアプローチでLagrangianを決定した。その際、できるだけ行間は埋め、論理をはっきりさせたつもりである。
+
+記事の後半は特殊相対論をLagrange形式から構築する。
+\end{abstract}
+
+\tableofcontents
+
+\section{古典力学の基礎(仮定及び経験則)}
+この節では古典力学の基礎(前提)を書いた。以下の内容は
+Lagrangianの決定で重要になる。
+\subsection{古典力学の時空間}
+
+\subsubsection{基準系(定義)}
+
+自然の中の様々な過程を記述するには基準系が必要である。ここに、基準系とは粒
+子の空間的位置を指定する座標系と、時刻を指定するためのこの系に固定された時計
+とを合わせたものである。
+
+\subsubsection{古典的時空(仮定)}
+古典論では、すべての基準系に共通する絶対時間が存在すると仮定する。したがって、
+二つの事象の時間間隔は基準系によらない。また、同時刻における空間は3次元ユーク
+リッド空間であり、同時刻に起きた二事象の空間距離は基準系によらないと仮定する。
+\\数式で表すと、ある事象を基準系 $K$ では $(t,\bm{x})$ で表し、 $K^\prime$ では $(t^\prime , \bm{x}^\prime)$ とすると、
+異なる時刻での事象の時間間隔は、
+\[
+\varDelta t=\varDelta t^\prime
+\]
+を満たし、同時刻での事象の空間的間隔は
+\[
+|\varDelta\bm{x}|=|\varDelta\bm{x}^\prime|
+\]
+が成り立つということである。
+
+\subsection{慣性の法則(経験則)}
+\label{sec:inertial}
+他と相互作用をしていない粒子、すなわち自由粒子、の運動が一様な等速直線運動を
+するような基準系、すなわち慣性基準系を見出すことが可能である。
+また、そのような基準系に対して一様な等速直線運動する基準系も慣性基準系であ
+る。
+
+\subsection{自然が持つ時空間に対する対称性(経験則)}
+\label{sec:Symmetry}
+経験則として、ある実験を別の位置で全く同様に行っても同じ結果が出る。これ
+を、自然の法則は空間並進に対して不変、または対称性を持つと言う。(空間の一様
+性)
+
+同様に、どの方向、どの時間でも自然の法則は不変である。(空間の等方性と時間の
+一様性)
+
+\subsection{慣性基準系間の座標変換―Galileiブーストの導出}
+\label{sec:Galilei Boost}
+慣性基準系 $K$ と それに対して一様な等速度 $\bm{V}$ で運動する慣性基準系 $K^\prime$
+を考える。簡単のため、 $K$ 系と $K^\prime$ 系は時刻 $t=0$ で原点と時刻が一致していて、かつ
+空間座標軸は平行で、同じ向きに取ってあるとする。
+%図
+時空間の一様性から、慣性系間の座標変換はアフィン変換でなければならない。(この証明は付録に載せた)
+\\したがって、$K$系と$K^\prime$系の間には、$3\times3$行列Aおよび、$3\times1$の定ベクトル$\bm{a}$ ,$\bm{B}$、定数$b$を用いて
+\begin{align*}
+\bm{x}^\prime&=A\bm{x}+\bm{B}t+\bm{a}
+\\t^\prime&=t+b
+\end{align*}
+と書ける。今、$t=0$で原点と時刻が一致していることから、$\bm{a}=0 , b=0$ となる。ここで、$K$系から見た$K^\prime$系の原点は
+$\bm{x}=\bm{V}t$ であり、$K^\prime$系では$\bm{x}^\prime=0$より、
+\begin{align*}
+0&=(A\bm{V}+\bm{B})t
+\\
+\therefore \bm{B}&=-A\bm{V}
+\end{align*}
+\[
+\rightarrow \bm{x}^\prime=A(\bm{x}-\bm{V}t)
+\]
+となる。また、同時刻での事象の空間的間隔は等しいため、
+\begin{equation}
+|\bm{x}_2^\prime-\bm{x}_1^\prime|^2=|\bm{x}_2-\bm{x}_1|^2
+\label{eq:len}
+\end{equation}
+でなければならない。この時、$\bm{x}_2^\prime-\bm{x}_1^\prime=A(\bm{x}_2-\bm{x}_1)$より、
+\begin{equation}
+|\bm{x}_2^\prime-\bm{x}_1^\prime|^2=(\bm{x}_2-\bm{x}_1)^TA^TA(\bm{x}_2-\bm{x}_1)
+\label{eq:Alen}
+\end{equation}
+(\refeq{eq:len})と(\refeq{eq:Alen})より、
+\[
+A^TA=I \quad (Iは単位行列)
+\]
+となる。これを満たす行列Aの集合は直交行列であり、反転を除くと$A\in SO(3)$ である。
+今は特に、座標軸が互いに平行で同じ向き場合を考えているため、$A=I$ となる。
+\\以上より、求めたかったGalileiブーストは、
+\begin{align}
+\bm{x}^\prime&=\bm{x}-\bm{V}t
+\label{eq:Galilei Trans}
+\\t^\prime&=t
+\end{align}
+となる。位置の原点、時刻の原点および座標軸の取り方を一般化すると、
+\[
+\bm{x}'=A(\bm{x}-\bm{V}t)+\bm{a},\qquad t'=t+b
+\]
+となる。($A\in SO(3)$)$\quad$これは一般のGalilei変換であり、式(3)、(4)はそのうちブースト部分を表す。
+
+\subsection{Galileiの相対性原理(経験則)}
+あらゆる慣性基準系において、力学の法則は同じである。いいかえると、力学を記
+述する方程式は、異なる慣性基準系の座標と時間を使って書いても、すべて同じ形に
+なる。
+
+
+\subsection{運動の決定論(経験則)}
+\label{sec:Motion}
+3次元空間において拘束のない $N$ 個の粒子系の力学的自由度は $3N$ である。粒子の位置を記述
+するために一般化座標 $\bm{q}(t)=\bigl(q_1(t),q_2(t),\ldots,q_{3N}(t)\bigr)$
+を定義し、一般化速度をその導関数として $\dot{\bm{q}}(t)=\bigl(\dot{q}_1(t),\dot{q}_2(t),\ldots,\dot{q}_{3N}(t)\bigr)$
+と定義する。
+
+古典力学では経験則として、系の瞬間的な状態を $\qv(t)$ と $\dot{\qv}(t)$ により完全に指定でき、その状態がその直後の時間発展を決定する。
+このことはすなわち、粒子の加速度が位置と速度の関数で表せることを意味する。
+\begin{equation}
+\ddot{\bm{q}}(t)=\bm{f}\bigl(\bm{q}(t),\dot{\bm{q}}(t),t\bigr)
+\label{eq:accelaration}
+\end{equation}
+なぜならば、ある時刻 $t$ での加速度が定まれば、そこから微小時間 $dt$
+だけ経過した時刻での位置と速度は
+\begin{align*}
+\dot{\qv}(t+dt)&\simeq\dot{\qv}(t)+\ddot{\qv}(t)dt\\
+\qv(t+dt)&\simeq\qv(t)+\dot{\qv}(t)dt
+\end{align*}
+で求めることができる。(ここで、$(dt)^2$ 以上は無視した) そして、(\refeq{eq:accelaration})式により、時刻 $t+dt$ での加速度が定まるため、
+さらに $dt$ だけ経過した時も同様に計算できる。
+一般に、(\refeq{eq:accelaration})式を運動方程式と言う。
+次の節で運動方程式(\refeq{eq:accelaration})を与える方法(原理)を示す。
+
+\section{停留作用の原理}
+粒子の運動は停留作用の原理から与えられ、おのおのの系はLagrangianと呼ばれる関数 $\La$ で記述される。
+\ref{sec:Motion} 節より、運動方程式は 2 階の微分方程式である。そのため、古典力学の運動方程式を高々2階に保つためLagrangian $\La$ は
+$\qv(t)$ , $\dot{\qv}(t)$ , $t$ の関数であると仮定する。
+\\作用 $S$ は粒子の軌道 $\qv(t)$ を引数とする汎関数として次のように記述される。
+\[
+S[\qv(t)]:=\int_{t_i}^{t_f}dt\Laq
+\]
+作用は粒子の軌道 $\qv(t)$ を一つ定めると値が決まるという関係にある。
+\[
+\qv(t) \longmapsto S[\qv(t)]
+\]
+%図
+停留作用の原理とは、まず境界条件として、時刻 $t_i$ と $t_f$ での粒子の位置を固定させ
+る。この条件の下で時刻 $t_i$ から $t_f$ までのあらゆる軌道のうち、作用が停留するよう
+な軌道を自然は選ぶということである。
+具体的にはまず、ある軌道 $\qv(t)$ があり、以下の境界条件を満たす滑らかな任意の関数 $\bm{g}(t)$ と任意に微小な量 $\epsilon$ を用いて軌道を $\epsilon \bm{g}(t)$ だけ変化させる。
+\[
+\qv(t) \rightarrow \qv(t)+\epsilon \bm{g}(t)
+\]
+ただし、$\bm{g}(t)$ の境界条件は
+\begin{equation}
+\bm{g}(t_i)=0=\bm{g}(t_f)
+\label{eq:boundry}
+\end{equation}
+この時、速度は
+\[
+\dot{\qv}(t) \rightarrow \dot{\qv}(t)+\epsilon\dot{\bm{g}}(t)
+\]
+である。
+%図
+作用の変化はこの時、
+\begin{align*}
+\delta S[\qv(t)]&:=S[\qv(t)+\epsilon\bm{g}(t)]-S[\qv(t)]
+\\&=\intS\La\bigl(\qv(t)+\epsilon\bm{g}(t),\dot{\qv}(t)+\epsilon\dot{\bm{g}}(t),t\bigr)-\intS\Laq
+\\&=\epsilon\intS\Bigl[\pdv{\Laq}{\qv(t)}\cdot\bm{g}(t)+\pdv{\Laq}{\dot{\qv}(t)}\cdot\dot{\bm{g}}(t)\Bigr]+\mathcal{O}(\epsilon^2)
+\\&=\epsilon\intS\bm{g}(t)\cdot\Bigl[\ELeq\Bigr]+\mathcal{O}(\epsilon^2)
+\end{align*}
+となる。ここで、4行目の計算では積分第二項を部分積分し、境界条件(\refeq{eq:boundry})を用いた。
+\\停留条件は、$\epsilon$ の一次の項が0となることである。
+したがって、
+\[
+\intS\bm{g}(t)\cdot\Bigl[\ELeq\Bigr]=0
+\]
+である。今、$\bm{g}(t)$ は(\refeq{eq:boundry})を満たす任意の関数より、
+\begin{equation}
+\ELeq=0
+\label{eq:ELeq}
+\end{equation}
+が作用を停留させる条件として得られる。(\refeq{eq:ELeq})式は高々2階の微分方程式になっていることがわかる。これ
+が求めたかった運動方程式である。この方程式は Euler-Lagrange 方程式と呼ばれてい
+る。仮にLagrangianが位置の 2 階時間微分以上の関数に依っていれば、同様の計算か
+ら一般に 2 階より高階な微分方程式が得られてしまうことが確認できる。
+
+\section{対称性によるLagrangianの決定}
+
+\subsection{Lagrangianの不定性}
+\label{sec:invariance}
+Lagrangianに位置と時間の任意の関数 $G(\qv(t),t)$ の時間全微分 $\frac{d}{dt}G(\qv(t),t)$
+を加えてもEuler-Lagrange方程式(\refeq{eq:ELeq})は等価である。以下にそれを示す。
+\[
+\tilde{\La}(\qv(t),\dot{\qv}(t),t):=\Laq+\dv{G(\qv(t),t)}{t}
+\]
+とする。この時、作用$S$は
+\begin{align*}
+\tilde{S}[\qv(t)] &:= \intS\tilde{\La}(\qv(t),\dot{\qv}(t),t)=\intS\Laq+\intS\dv{G(\qv(t),t)}{t}
+\\ &= S[\qv(t)]+G(\qv(t_f),t_f)-G(\qv(t_i),t_i)
+\end{align*}
+となる。
+\[
+\qv(t) \rightarrow \qv(t)+\epsilon \bm{g}(t)
+\]
+と変化させたとき、上の式及び、$\delta G(\qv(t_f),t_f)=0=\delta G(\qv(t_i),t_i)$ より、
+\[
+\delta\tilde{S}[\qv(t)]=\delta S[\qv(t)]
+\]
+となることが分かる。よって停留条件から、
+\[
+\pdv{\tilde{\La}(\qv(t),\dot{\qv}(t),t)}{\qv(t)}-\frac{d}{dt}\pdv{\tilde{\La}(\qv(t),\dot{\qv}(t),t)}{\dot{\qv}(t)}=\pdv{\La(\qv(t),\dot{\qv}(t),t)}{\qv(t)}-\frac{d}{dt}\pdv{\La(\qv(t),\dot{\qv}(t),t)}{\dot{\qv}(t)}=0
+\]
+となり、Euler-Lagrange方程式は等価であることが確認できた。また、Lagrangianは定数倍だけの不定性がある。すなわち、
+\[
+\tilde{\La}(\qv(t),\dot{\qv}(t),t)=C\Laq \quad (C\ne 0)
+\]
+としても、Euler-Lagrange方程式は等価であることが確認できる。以下の節では
+位置、速度、時間に対してある変換を施し、それに対してLagrangianが高々 $\frac{d}{dt}G(\qv(t),t)$
+の変化分になるようなLagrangianの関数形を求める。 
+
+\subsection{対称性による1自由粒子系のLagrangianの決定}
+\ref{sec:invariance}節で求めたEuler-Lagrange方程式の等価条件を元に、以下の節で課す対称性によって
+許されるLagrangianの形を求める。計算を単純にするため、以下ではデカルト座標系を用い、
+粒子の位置を $\bm{x}(t)=\bigl(x(t),y(t),z(t)\bigr)$ として記述する。
+
+\subsubsection{空間並進対称性}
+\label{sec:Trans symmetry}
+空間並進とは、系内の物の位置をすべて同じ一定量だけずらす操作である。この時、配置をずらすだけで、それ以外は変更しない。
+数式で書くと、
+\[
+\bm{x}(t)\rightarrow \bm{x}(t)+\bm{a} \quad それ以外変更しない
+\]
+となる。
+\\ \ref{sec:Symmetry}節で述べたように、自然を記述する方程式は空間並進対称性を持つ。
+以下では空間並進対称性を持つためのLagrangianの形を求める。
+
+代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは空間並進に対して変化しないものを代表
+にとる。この時、明らかにLagrangianは $\bm{x}(t)$ に依らないものと分かる。一応、証明は以下の通りである。
+\\$\textbf{証明}$
+
+任意の空間並進 $\bm{a}$ を用いて微小な空間並進変換を
+\[
+\bm{x}(t) \rightarrow \bm{x}(t)+\epsilon\bm{a}
+\]
+とする。この時、速度は
+\[
+\dot{\bm{x}}(t) \rightarrow \dot{\bm{x}}(t)
+\]
+と、変化しない。この微小変換させたLagrangianは、
+\[
+\La(\bm{x}(t)+\epsilon\bm{a},\dot{\bm{x}}(t),t)=\La(\bm{x}(t),\dot{\bm{x}}(t),t)+\pdv{\La(\bm{x}(t),\dot{\bm{x}}(t),t)}{\bm{x}(t)}\cdot\bm{a}\epsilon+\mathcal{O}(\epsilon^2)
+\]
+となる。Euler-Lagrange方程式が等価であるためには、
+\[
+\pdv{\La(\bm{x}(t),\dot{\bm{x}}(t),t)}{\bm{x}(t)}\cdot\bm{a}\epsilon+\mathcal{O}(\epsilon^2)
+=\frac{d}{dt}G_\epsilon(\bm{x}(t),t)
+\]
+となる関数$G_\epsilon(\bm{x}(t),t)$が存在することで保証される。ここで$G_\epsilon$の$\epsilon$は微小パラメータ$\epsilon$に依ることを強調してある。
+Lagrangianの代表としてLagrangianが変化しない時、すなわち $\frac{d}{dt}G_\epsilon(\bm{x}(t),t)=0$ の場合を考える。
+この時、両辺 $\epsilon$ で割って $\epsilon \rightarrow 0$ の極限をとると、
+\[
+\pdv{\La(\bm{x}(t),\dot{\bm{x}}(t),t)}{\bm{x}(t)}\cdot\bm{a}=0
+\]
+を得る。$\bm{a}$ は任意より、
+\[
+\pdv{\La(\bm{x}(t),\dot{\bm{x}}(t),t)}{\bm{x}(t)}=0
+\]
+となる。よって、Lagrangianは $\bm{x}(t)$ に依らないことが分かった。 $\square$
+\\もちろん、$G\ne0$ を含めると、Lagrangianの関数形はこの限りではない。
+
+\subsubsection{時間並進対称性}
+\label{sec:time symmetry}
+時間並進とは、系内の物の位置や速度は変化させず、実験を行う時間だけを変更させる操作である。数式で書くと、
+\[
+t\rightarrow t+t_0 \quad の時、 \quad \bm{x}(t)\quad \dot{\bm{x}}(t) \quad は変化させない。 
+\]
+となる。
+\\自然の法則は時間並進対称性を持つ。
+代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは時間並進に対して変化しないものを代表
+にとる。この時、明らかにLagrangianは $t$ に陽に依らないとわかる。一応、証明は以下の通りである。
+\\\textbf{証明}
+
+任意の時間並進 $t_0$ を用いて微小な時間並進変換を
+\[
+t\rightarrow t+\epsilon t_0:=t'
+\]
+とする。
+この時Lagrangianは、
+\[
+\La(\dot{\bm{x}}(t),t+\epsilon t_0)=\La(\dot{\bm{x}}(t),t)+\pdv{\La(\dot{\bm{x}}(t),t)}{t}t_0\epsilon+\mathcal{O}(\epsilon^2)
+\]
+となる。ここで、\ref{sec:Trans symmetry}の結果を用いて、$\La$ は位置に依らないとした。
+\ref{sec:Trans symmetry}での議論同様、Lagrangianの代表としてその変化分が、$\frac{d}{dt}G_\epsilon(\bm{x}(t),t)=0$ の場合を考える。
+この時、両辺 $\epsilon$ で割って $\epsilon \rightarrow 0$ の極限をとると、$t_0$ は任意より、
+\[
+\pdv{\La(\dot{\bm{x}}(t),t)}{t}=0
+\]
+が得られる。すなわち、Lagrangianは時間に陽に依らないことが分かった。 $\square$
+
+\subsubsection{空間回転対称性}
+空間回転とは、系内の物をすべてある軸周りに一定の角度だけ回転させる操作である。数式で書くと、
+\[
+\bm{x}(t)\rightarrow R\bm{x}(t) \quad \dot{\bm{x}}(t) \rightarrow R\dot{\bm{x}}(t) \quad t\rightarrow t \quad (R\in SO(3))
+\]
+である。$SO(3)$ とは特殊直交群と呼ばれる行列の集合であり、$R^TR=RR^T=I\quad かつ\quad det(R)=1$ を満たすものである。
+\\自然の法則は空間回転対称性を持つ。代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは空間回転に対して変化しないものを代表
+にとる。空間回転に対して不変な量はスカラー量である。
+よって、代表のLagrangianは $\dot{\bm{x}}(t)$ の内積で表された関数しか許されず、一般に
+\[
+\La(\dot{\bm{x}}^2(t))
+\]
+として書ける。ここで、\ref{sec:Trans symmetry}と\ref{sec:time symmetry}の結果を使って位置と時間に陽に依らないとした。
+証明は簡単で、以下のようになる。
+
+\textbf{証明}
+\[
+\dot{\bm{x}}'^2=(R\dot{\bm{x}})^2=(R\dot{\bm{x}})^T(R\dot{\bm{x}})=\dot{\bm{x}}^TR^TR\dot{\bm{x}}=\dot{\bm{x}}^2
+\]
+ここで、特殊直交行列の性質 $R^TR=I$ を用いた。$\square$
+
+以上の議論は $G=0$ である場合の自明なLagrangianを求めたが、一般に $G\ne0$ とすると
+Lagrangianの形はこの限りでない。例えば、時間並進、空間回転に対してLagrangianは不変だが、
+空間並進に対して Lagrangianの変化が $G(\bm{x},t)$ の時間全微分で書けるものの一つとして、
+\[
+\bm{x}\cdot\dot{\bm{x}}
+\]
+の1次までの関数形があげられる。この時、
+$$\bm{x}\cdot\dot{\bm{x}}=\frac{1}{2}\frac{d}{dt}(\bm{x})^2$$
+となり、この項自身が時間の全微分である。少し先取りするが、$\bm{x}\cdot\dot{\bm{x}}$は、Galileiブーストに対しても
+この項自身が時間の全微分になるため、初めから除外しても良い。
+
+\subsubsection{Galileiブースト対称性}
+ここまでの議論で、代表のLagrangianの関数形は
+\[
+\La(\dot{\bm{x}}^2(t))
+\]
+まで絞れた。Galileiブーストをするには、粒子を記述する基準系が慣性基準系でないといけないので、今、粒子を記述する基準系を慣性基準系として考える。
+\\自然は慣性基準系同士を取り換えても同じ法則であるという相対性原理が確かめられている。
+Galileiブーストは\ref{sec:Galilei Boost}節で求めた式(\refeq{eq:Galilei Trans})より、$\epsilon$ を微小な量として
+以下のような微小Galileiブーストを考える。
+\begin{align*}
+\bm{x}(t) &\rightarrow \bm{x}(t)-\epsilon\bm{V}t
+\\\dot{\bm{x}}(t) &\rightarrow \dot{\bm{x}}(t)-\epsilon\bm{V}
+\\t'&=t
+\end{align*}
+この時Lagrangianは、
+\[
+\La((\dot{\bm{x}}(t)-\epsilon\bm{V})^2)=\La(\dot{\bm{x}}^2(t))-\pdv{\La(\dot{\bm{x}}^2(t))}{(\dot{\bm{x}}^2(t))}2\bm{V}\cdot\dot{\bm{x}}(t)\epsilon+\mathcal{O}(\epsilon^2)
+\]
+となる。ここで、Lagrangianの代表として $\frac{d}{dt}G_\epsilon(\bm{x}(t),t)=0$ としてしまうと、ちょっと計算すると分かるように、
+\[
+\pdv{\La(\dot{\bm{x}}^2(t))}{(\dot{\bm{x}}^2(t))}=0
+\]
+でなければならないことが得られる。
+これはLagrangianが定数であることを意味し、つまらない(今回ほしいものではない)ため除外する。
+
+Lagrangianの変化分を $\frac{d}{dt}G_\epsilon(\bm{x}(t),t)\ne0$ として考える。まず、$\frac{d}{dt}G_\epsilon(\bm{x}(t),t)$の時間全微分を計算すると、
+\[
+\frac{d}{dt}G_\epsilon(\bm{x}(t),t)=\pdv{G_\epsilon(\bm{x}(t),t)}{\bm{x}(t)}\cdot{\dot{\bm{x}}(t)}+\pdv{G_\epsilon(\bm{x}(t),t)}{t}
+\]
+となる。これと、Euler-Lagrange方程式の等価条件から、
+\[
+-\pdv{\La(\dot{\bm{x}}^2(t))}{(\dot{\bm{x}}^2(t))}2\bm{V}\cdot\dot{\bm{x}}(t)\epsilon+\mathcal{O}(\epsilon^2)
+=\pdv{G_\epsilon(\bm{x}(t),t)}{\bm{x}(t)}\cdot{\dot{\bm{x}}(t)}+\pdv{G_\epsilon(\bm{x}(t),t)}{t}
+\]
+となる。右辺を見ると、$\dot{\bm{x}}(t)$の一次までの項しかない。
+したがって、
+\[
+\pdv{\La(\dot{\bm{x}}^2(t))}{(\dot{\bm{x}}^2(t))}=一定
+\]
+でなければならない。(必要条件)これより、Lagrangianは定数 $C$ を用いて
+\begin{equation}
+\La(\dot{\bm{x}}^2(t))=C\dot{\bm{x}}^2(t)
+\label{eq:Lagrangian}
+\end{equation}
+と、具体的な関数形が求まった。ここで、定数項(積分定数)の不定性もあるが、Euler-Lagrange方程式に代入するとわかるように消えるため、
+初めから省いた。今、必要条件としてLagrangianの関数形を出したが、この時逆に(\refeq{eq:Lagrangian})に任意のGalileiブーストを適用すると、
+\[
+\La(\dot{\bm{x}}'^2(t))=\La((\dot{\bm{x}}(t)-\bm{V})^2)=\La(\dot{\bm{x}}^2(t))+\frac{d}{dt}C(\bm{V}^2t-2\bm{x}(t)\cdot\bm{V})
+\]
+となり、
+$$G(\bm{x}(t),t)=C(\bm{V}^2t-2\bm{x}(t)\cdot\bm{V})$$
+が存在し、十分性が確認できた。定数 $C$ は\ref{sec:invariance}節で述べたように、Lagrangian全体に
+定数倍の不定性があるため、自由パラメータである。この定数$C$は粒子を特徴づけるパラメータであると解釈する。
+一粒子の自由運動だけでは $C$ の値を比較・測定できない。相互作用する複数粒子を考えることで、粒子ごとの係数 $C$ の比が運動に影響するようになり、これを慣性質量として解釈できる。
+その説明は\ref{sec:mass}節で行う。
+
+(\refeq{eq:Lagrangian})式をEuler-Lagrange方程式(\refeq{eq:ELeq})に代入すると、
+\[
+\ddot{\bm{x}}(t)=0
+\]
+が導かれ、これは\ref{sec:inertial}節で仮定した慣性の法則と整合している。
+
+\subsection{2粒子相互作用系のLagrangian}
+\subsubsection{Lagrangianの加法性(仮定)}
+\label{sec:Additive}
+今、力学系が2つの孤立系AとBから成り立っていて、各々の系のLagrangianが$\La_A$ , $\La_B$
+で与えられていたとする。ここで孤立系とは、自分自身の系以外と全く相互作用しない系であり、今の場合系AとBは孤立系なので、互いに全く相互作用しないとする。
+この時、全体系のLagrangianは
+\[
+\La=\La_A + \La_B
+\]
+となる。このLagrangianの加法性は、互いに相互作用していない各系のLagrangianは自分以外の系の量を含むことは
+ないという事実を表現している。
+
+\subsubsection{対称性による相互作用項の制限}
+互いに相互作用しない、二つの自由粒子1と2の全体系のLagrangianは\ref{sec:Additive}及び\refeq{eq:Lagrangian}より、
+\[
+\La=\La_1 + \La_2 =C_1\dot{\bm{x}}_1^2+C_2\dot{\bm{x}}_2^2
+\]
+と書ける。(速度の引数$t$は省略した)ここで、相互作用する場合に拡張する。相互作用Lagrangianを $\La_{12}$ とすると、
+\[
+\La=C_1\dot{\bm{x}}_1^2+C_2\dot{\bm{x}}_2^2+\La_{12}(\bm{x}_1,\bm{x}_2,\dot{\bm{x}}_1,\dot{\bm{x}}_2,t)
+\]
+となる。今、粒子1,2を含んだ全体系は孤立系なので、時空間の並進、空間の回転及びGalileiブースト対称性を持つことを要請する。(孤立系でない場合、系はこれらの対称性を持つとは限らない。)
+また、粒子が形成する場の自由度は今考えないとする。
+
+まず、\ref{sec:time symmetry}より、代表のLagrangian、すなわち時間並進に対して不変なものとして$\La_{12}$が時間に陽に
+依らないことが分かる。
+
+次に、回転対称性から代表なLagrangian、すなわち回転変換に対して不変なものとして、$\La_{12}$がスカラー量で
+あることが分かる。すなわち、
+\[
+\bm{x}_i\cdot\bm{x}_j \quad |\bm{x}_2-\bm{x}_1| \quad \dot{\bm{x}}_i\cdot\dot{\bm{x}}_j \quad |\dot{\bm{x}}_2-\dot{\bm{x}}_1|
+\quad \bm{x}_i\cdot\dot{\bm{x}}_j \quad |\bm{x}_i-a\dot{\bm{x}}_j| \quad (i,j=1,2)
+\]
+等に依る形が許される。
+
+次に、空間並進に対してLagrangianの変化が高々 $G(\bm{x}(t),t)$ の全微分であるものは以下のものがあげられる。
+\[
+|\bm{x}_2-\bm{x}_1| \quad \dot{\bm{x}}_i\cdot\dot{\bm{x}}_jの一次 \quad |\dot{\bm{x}}_2-\dot{\bm{x}}_1| \quad \bm{x}_i\cdot\dot{\bm{x}}_jの一次 \quad (i,j=1,2)
+\]
+
+さらに、Galileiブースト対称性から、Lagrangianの変化が高々 $G(\bm{x}(t),t)$ の全微分であるものは以下のものがあげられる。
+\[
+|\bm{x}_2-\bm{x}_1| \quad \dot{\bm{x}}_i\cdot\dot{\bm{x}}_jの一次 \quad |\dot{\bm{x}}_2-\dot{\bm{x}}_1| \quad (i,j=1,2)
+\]
+
+ここで、粒子1と2との間を相互作用が無視
+できるほど十分遠くまで離せば、\ref{sec:Additive}で述べたように、
+Lagrangianには自分以外の系の量を含まない。
+\[
+\lim_{|\bm{x}_2-\bm{x}_1|\rightarrow \infty}\La = \La_1 + \La_2 \quad (\La_{12}\rightarrow 0)
+\]
+このことから、$\dot{\bm{x}}_1\cdot\dot{\bm{x}}_2$の一次及び$|\dot{\bm{x}}_2-\dot{\bm{x}}_1|$だけの項は除外される。
+また、$|\bm{x}_2-\bm{x}_1|\rightarrow \infty$において、$\La_{12}\rightarrow 0$ となるような相互作用でなければならない。
+したがって、例えば次のような速度を含む相互作用もあり得る。
+$$\frac{|\dot{\bm{x}}_2-\dot{\bm{x}}_1|}{|\bm{x}_2-\bm{x}_1|^n} \quad (n>0)$$
+(これは時空間の並進、回転、Galileiブースト対称性を満たす。)
+
+以上の対称性だけでは速度依存相互作用は排除できない。
+以下では通常のNewton型相互作用を構成するため、相互作用項は粒子の位置だけに依存すると追加で仮定する。すなわち、$|\bm{x}_2-\bm{x}_1|$型の
+相互作用を仮定する。
+\[
+\La=C_1\dot{\bm{x}}_1^2+C_2\dot{\bm{x}}_2^2+\La_{12}(|\bm{x}_2-\bm{x}_1|)
+\]
+であるとわかった。ここで、慣習として、$V=-\La_{12}$ に取ると、
+\begin{equation}
+\La=C_1\dot{\bm{x}}_1^2+C_2\dot{\bm{x}}_2^2-V(|\bm{x}_2-\bm{x}_1|)
+\label{eq:Lagrangian int}
+\end{equation}
+となる。$V$はNewton力学でいうポテンシャルエネルギーである。
+この相互作用項は実験によって具体的な関数形を調べる必要がある。
+
+(\refeq{eq:Lagrangian int})式をEuler-Lagrange方程式(\refeq{eq:ELeq})に代入すると、運動方程式は
+\begin{align}
+\frac{d}{dt}(2C_1\dot{\bm{x}}_1)&=-\frac{\partial}{\partial \bm{x}_1}V(|\bm{x}_2-\bm{x}_1|)=\pdv{V}{(|\bm{x}_2-\bm{x}_1|)}\frac{\bm{x}_2-\bm{x}_1}{|\bm{x}_2-\bm{x}_1|}
+\label{eq:EOM1}
+\\
+\frac{d}{dt}(2C_2\dot{\bm{x}}_2)&=-\frac{\partial}{\partial \bm{x}_2}V(|\bm{x}_2-\bm{x}_1|)=-\pdv{V}{(|\bm{x}_2-\bm{x}_1|)}\frac{\bm{x}_2-\bm{x}_1}{|\bm{x}_2-\bm{x}_1|}
+\label{eq:EOM2}
+\end{align}
+となる。
+ここで、相互作用における力なる物理量を次のように定義する。
+\[
+\bm{F}:=-\pdv{V}{\bm{x}}
+\]
+(\refeq{eq:EOM1})と(\refeq{eq:EOM2})から、2粒子相互作用系の力は
+\begin{align*}
+-\pdv{V}{\bm{x}_1}&=\bm{F}_{1}\propto \bm{x}_2-\bm{x}_1
+\\
+-\pdv{V}{\bm{x}_2}&=\bm{F}_{2}\propto \bm{x}_1-\bm{x}_2
+\end{align*}
+及び、
+\[
+\bm{F}_1=-\bm{F}_2
+\]
+なる性質を持つ。これはNewton力学でいう作用反作用の法則である。
+
+\subsubsection{慣性質量の定義}
+\label{sec:mass}
+(\refeq{eq:EOM1})+(\refeq{eq:EOM2})を行うと、
+\[
+2C_1\ddot{\bm{x}}_1+2C_2\ddot{\bm{x}}_2=0
+\]
+となる。ここで、2という係数は非本質であるため、$2C_1=m_1,2C_2=m_2$ と置く。
+また、少し式を変形させ、
+\[
+m_1\ddot{\bm{x}}_1=-m_2\ddot{\bm{x}}_2
+\]
+とする。ベクトルの長さに注目すると、
+\[
+\frac{m_1}{m_2}=\frac{|\ddot{\bm{x}}_2|}{|\ddot{\bm{x}}_1|}
+\]
+このように、粒子にお互い同じ大きさの力が作用しているとき、粒子
+に発生する加速度の大きさの逆比を慣性質量と定義する。これより慣性質量は、同じ大きさの力に対して、慣性質量
+が大きいほど加速しにくいことを意味する量となる。
+
+以上より、係数$C$の物理的意味が明らかになった。これより、2粒子相互作用系のLagrangianは、
+\begin{equation}
+\La=\frac{1}{2}m_1\dot{\bm{x}}_1^2+\frac{1}{2}m_2\dot{\bm{x}}_2^2-V(|\bm{x}_2-\bm{x}_1|)
+\label{eq:Lagrangian!}
+\end{equation}
+と書ける。\refeq{eq:Lagrangian!}の第一項と第二項はNewton力学でいう運動エネルギーである。
+
+\subsection{基本相互作用項の具体的な関数形}
+速度に依存しない中心力ポテンシャルの代表例として、Newton重力ポテンシャルと静電的Coulombポテンシャルがある。
+\[
+V_{重力}=-G\frac{m_1m_2}{|\bm{x}_2-\bm{x}_1|} \qquad V_{電気力}=\frac{1}{4\pi\epsilon_0}\frac{q_1q_2}{|\bm{x}_2-\bm{x}_1|}
+\]
+一つ目が重力相互作用、二つ目が(静)電気相互作用である。これとは別にバネによる相互作用
+\[
+V_{バネ}=\frac{1}{2}k|\bm{x}_2-\bm{x}_1|^2
+\]
+があるが、これは基本的な相互作用ではない。というのも、2粒子間を繋ぐバネをある程度伸ばすと、バネは壊れる。
+また、バネの相互作用はミクロに見れば電気的相互作用である。
+
+重力相互作用の形は、天文学的観測によるKeplerの3法則とここまで得た運動方程式から、重力は距離の
+2乗(すなわち対応するポテンシャル$V$は1乗)に反比例することが導かる。さらに、同じ重力法則が任意の二物体間に成り立つことと作用反作用則から、相互作用の強さは二物体の慣性質量の積 \(m_1m_2\) に比例することが分かる。
+$G$はその比例係数で、万有引力定数である。
+
+静電気相互作用の形は、Coulombによるねじり天秤を用いた帯電球同士の引き合い、反発による測定で、万有引力同様距離の2乗(すなわち対応するポテンシャル$V$は1乗)に反比例することが確かめられた。また各物体の電荷量に比例することが経験的に知られた。
+
+さらに重要なことに、今回採用した同時刻の粒子位置だけに依存するポテンシャル模型では、
+相互作用は瞬時に伝わるものとして記述される。
+
+\section{孤立系でないLagrangian}
+ようやくこれが古典力学のLagrange形式の最後の節だ。今までは孤立系のLagrangianについて議論してきたが、
+一般の力学系を調べるとき、一般には孤立系でない。そこで、この場合にも適用できるLagrangianを考える。
+
+今、孤立系でない系Aが与えられた外場(系B)の中を運動しているとする。
+この時、系Aと系Bを合わせた系は孤立系であるとする。そうすると、系A+BのLagrangianは、(\refeq{eq:Lagrangian!})
+を多粒子系に一般化した形、
+\begin{equation}
+\La_{A+B}=K_A(\dot{\bm{x}}_A)+K_B(\dot{\bm{x}}_B)-V(\bm{x}_A,\bm{x}_B)
+\label{eq:Multi}
+\end{equation}
+と書ける。$V$は系AとBの相互作用を表す。ここで、$K_A$及び$K_B$は系A,Bの運動エネルギー
+\[
+K_A(\dot{\bm{x}}_A)=\sum_{i}\frac{1}{2}m_i\dot{\bm{x}}_{Ai}^2 \quad K_B(\dot{\bm{x}}_B)=\sum_{j}\frac{1}{2}m_j\dot{\bm{x}}_{Bj}^2
+\]
+である。系Bは与えられた外場なので、$\bm{x}_{Bj}$の代わりに与えられた時間の関数 $\bm{r}(t)$ を(\refeq{eq:Multi})に代入すると、
+\[
+\La=K_A(\dot{\bm{x}}_A)+\tilde{K}_B(t)-\tilde{V}(\bm{x}_A,t)
+\]
+となる。ここで、$\tilde{K}_B(t)$ は時間の関数より、Lagrangianの不定性からなくすことができる。よって、外場の中における系のLagrangianは、
+\[
+\La=K(\dot{\bm{x}}^2)-V(\bm{x},t)
+\]
+と書けることが分かった。このLagrangianの形は(運動エネルギー)ー(ポテンシャル)の
+形になっている。これをEuler-Lagrange方程式(\refeq{eq:ELeq})に代入すると、
+\[
+m_i\ddot{\bm{x}}_i=-\pdv{V(\bm{x},t)}{\bm{x}_i}=\bm{F}_i
+\]
+となる。これが最終的に導出したかったNewtonの運動方程式である。以上より、
+作用原理と対称性、および位置だけに依存する相互作用という追加仮定から、Newton型の運動方程式と作用反作用則が再構成された。
+
+\section{特殊相対性理論}
+そのうち書く
+\appendix
+\section{慣性系間の座標変換がアフィン変換であることの証明}
+後々書く
+
+\addcontentsline{toc}{section}{参考文献}
+\begin{thebibliography}{99}
+\bibitem{landau1}
+「力学」ランダウ、リフシッツ 著 $\quad$ (主にこの本を参考にした)
+\bibitem{landau2}
+「場の古典論」ランダウ、リフシッツ 著
+\bibitem{Watanabe}
+「解析力学」渡辺 悠樹 著 $\quad$ (対称性の数学的なところを参考にした)
+\bibitem{Hatake}
+「解析力学」畑浩之 著 $\quad$ (粒子間の距離無限大で相互作用が0となるところを参考にした)
+\bibitem{Harashima}
+「力学」原島 鮮 著 $\quad$ (慣性質量の定義を参考にした)
+\bibitem{Bluebacks}
+「宇宙を支配する定数」(Blue Backs) 臼田孝 著 $\quad$ (重力、Coulomb力の歴史を参考にした)
+
+\end{thebibliography}
+
+
+
+\end{document}
