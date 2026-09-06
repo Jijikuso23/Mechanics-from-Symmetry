@@ -1,5 +1,5 @@
 # Fdb version 4
-["lualatex"] 1788716039.02191 "c:/Users/Kaito/OneDrive/デスクトップ/Document/Latex/古典力学対称性から/古典力学対称性から.tex" "古典力学対称性から.pdf" "古典力学対称性から" 1788716042.79535 0
+["lualatex"] 1788717628.32543 "c:/Users/Kaito/OneDrive/デスクトップ/Document/Latex/古典力学対称性から/古典力学対称性から.tex" "古典力学対称性から.pdf" "古典力学対称性から" 1788717631.95895 0
   "C:/Users/Kaito/.texlive2026/texmf-var/luatexja/extra_haranoajigothic-medium.luc" 1788531917 321585 25d16c6b9ec03685377615be620327e8 ""
   "C:/Users/Kaito/.texlive2026/texmf-var/luatexja/extra_haranoajimincho-regular.luc" 1788531910 322628 1f0d21f60d5142eb5c9c796fd1be0226 ""
   "C:/Users/Kaito/.texlive2026/texmf-var/luatexja/extra_lmmono9-regular.luc" 1788531911 16824 f8adfa306b1e334fb2ce2b3300805b82 ""
@@ -36,7 +36,7 @@
   "C:/texlive/2026/texmf-var/luatex-cache/generic/fonts/otl/lmsans12-regular.luc" 1788531917 128157 be51e1db6b6e529e525e6aec4d2a56f0 ""
   "C:/texlive/2026/texmf-var/luatex-cache/generic/fonts/otl/lmsans9-regular.luc" 1788537805 128297 b7476375bf0b595e71681af1698f6634 ""
   "C:/texlive/2026/texmf-var/luatex-cache/generic/names/luaotfload-names.luc.gz" 1788531901 380403 b4e7a17c9cbba6bf1070f3e48d2f7530 ""
-  "c:/Users/Kaito/OneDrive/デスクトップ/Document/Latex/古典力学対称性から/古典力学対称性から.tex" 1788716038 34446 707ac8a9e1badf5403401ed4478b6435 ""
+  "c:/Users/Kaito/OneDrive/デスクトップ/Document/Latex/古典力学対称性から/古典力学対称性から.tex" 1788716320 34446 707ac8a9e1badf5403401ed4478b6435 ""
   "c:/texlive/2026/texmf-dist/fonts/opentype/public/haranoaji/HaranoAjiGothic-Medium.otf" 1788493991 4760392 aafa9998dbe8bca0a2b37fc99dd6054a ""
   "c:/texlive/2026/texmf-dist/fonts/opentype/public/haranoaji/HaranoAjiMincho-Regular.otf" 1788493991 6422896 10567d16226fce1e1957ca6d1451a578 ""
   "c:/texlive/2026/texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf" 1788495746 111536 fc712364c8d0a1b548d46c76f2678030 ""
@@ -230,10 +230,10 @@
   "c:/texlive/2026/texmf-dist/tex/platex/jsclasses/jslogo.sty" 1788494809 5585 8e4615c54073c390d14154b29cee89cb ""
   "c:/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1788501517 5655996 795b756740562267ad2ae16e70168a76 ""
   "c:/texlive/2026/texmf-var/web2c/luahbtex/lualatex.fmt" 1788501646 6754543 307693239e80af1aee35047f4a2f3dba ""
-  "古典力学対称性から.aux" 1788716042 5805 b8b2f9f9c8d1c046de71d5db6ee1ba4b "lualatex"
-  "古典力学対称性から.out" 1788716042 2763 0de26944629eecc6c8cdd8805a1f3672 "lualatex"
-  "古典力学対称性から.tex" 1788716038 34446 707ac8a9e1badf5403401ed4478b6435 ""
-  "古典力学対称性から.toc" 1788716042 2590 22552ea9fd50e3d87a0124ddae0bf9d0 "lualatex"
+  "古典力学対称性から.aux" 1788717631 5805 b8b2f9f9c8d1c046de71d5db6ee1ba4b "lualatex"
+  "古典力学対称性から.out" 1788717631 2763 0de26944629eecc6c8cdd8805a1f3672 "lualatex"
+  "古典力学対称性から.tex" 1788716320 34446 707ac8a9e1badf5403401ed4478b6435 ""
+  "古典力学対称性から.toc" 1788717631 2590 22552ea9fd50e3d87a0124ddae0bf9d0 "lualatex"
   (generated)
   "古典力学対称性から.aux"
   "古典力学対称性から.log"
