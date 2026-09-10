@@ -7,11 +7,13 @@
 \usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
 \usepackage{physics}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
 \newcommand{\qv}{\bm{q}}
 \newcommand{\La}{\mathcal{L}}
 \newcommand{\Laq}{\mathcal{L}(\qv(t),\dot{\qv}(t),t)}
 \newcommand{\intS}{\int_{t_i}^{t_f}dt}
-\newcommand{\ELeq}{\pdv{\Laq}{\qv(t)}-\frac{d}{dt}\pdv{\Laq}{\dot{\qv}(t)}}
+\newcommand{\ELeq}{\frac{d}{dt}\pdv{\Laq}{\dot{\qv}(t)}-\pdv{\Laq}{\qv(t)}}
 
 \title{対称性と作用原理から力学を構成する
 \\―Newton力学から特殊相対論へ―}
@@ -31,26 +33,76 @@
 1.Newtonの運動方程式を前提とせず、それとは独立に古典力学を構築すること。
 \\2.物理の本質部分からLagrangianを決定すること。
 \\この2つを意識した。そのため、記事の構成としてはまず、古典力学の根本となる基礎
-(前提)を明確にし、その上で対称性というアプローチでLagrangianを決定した。その際、できるだけ行間は埋め、論理をはっきりさせたつもりである。
+(前提)や定義、経験則を明確にし、その上で対称性というアプローチでLagrangianを決定した。
+その際、できるだけ行間は埋め、論理をはっきりさせたつもりである。
 
 記事の後半は特殊相対論をLagrange形式から構築する。
 \end{abstract}
 
 \tableofcontents
 
-\section{古典力学の基礎(仮定及び経験則)}
+\section{古典力学の基礎}
 この節では古典力学の基礎(前提)を書いた。以下の内容は
 Lagrangianの決定で重要になる。
-\subsection{古典力学の時空間}
 
-\subsubsection{基準系(定義)}
+
+\subsection{基準系(定義)}
 
 自然の中の様々な過程を記述するには基準系が必要である。ここに、基準系とは粒
 子の空間的位置を指定する座標系と、時刻を指定するためのこの系に固定された時計
-とを合わせたものである。
+とを合わせたものである。(図\ref{fig:reference-frame})
 
-\subsubsection{古典的時空(仮定)}
-古典論では、すべての基準系に共通する絶対時間が存在すると仮定する。したがって、
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth]
+
+% 座標軸
+\coordinate (O) at (0,0);
+\coordinate (P) at (2.8,2.2);
+
+\draw[->,thick] (O) -- (4.2,0) node[right] {$x$};
+\draw[->,thick] (O) -- (0,3.3) node[above] {$y$};
+\node[below left] at (O) {$O$};
+
+% 座標を示す補助線
+\draw[gray,densely dashed] (2.8,0) -- (P) -- (0,2.2);
+\node[below] at (2.8,0) {$x(t)$};
+\node[left] at (0,2.2) {$y(t)$};
+
+% 位置ベクトルと粒子
+\draw[->,very thick,blue!70!black]
+  (O) -- (P)
+  node[midway,above left] {$\bm{x}(t)$};
+
+\fill (P) circle (2.8pt);
+\node[above right] at (P) {粒子};
+
+% 座標系に固定された時計
+\begin{scope}[shift={(5.4,2.2)}]
+  \draw[thick] (0,0) circle (0.48);
+
+  \foreach \angle in {0,30,...,330}{
+    \draw (\angle:0.40) -- (\angle:0.46);
+  }
+
+  \draw[thick] (0,0) -- (90:0.33);
+  \draw[thick] (0,0) -- (20:0.24);
+  \fill (0,0) circle (1.3pt);
+
+  \node[above] at (0,0.65) {時刻 $t$};
+  \node[below,align=center] at (0,-0.65)
+    {座標系に固定\\された時計};
+\end{scope}
+
+\end{tikzpicture}
+\caption{基準系を構成する空間座標系と、
+この系に固定された時計。空間は2次元で模式的に示した。}
+\label{fig:reference-frame}
+\end{figure}
+
+\subsection{古典的時空(仮定)}
+\label{sec:Spacetime}
+古典力学では、すべての基準系に共通する絶対時間が存在すると仮定する。したがって、
 二つの事象の時間間隔は基準系によらない。また、同時刻における空間は3次元ユーク
 リッド空間であり、同時刻に起きた二事象の空間距離は基準系によらないと仮定する。
 \\数式で表すと、ある事象を基準系 $K$ では $(t,\bm{x})$ で表し、 $K^\prime$ では $(t^\prime , \bm{x}^\prime)$ とすると、
@@ -62,89 +114,143 @@ Lagrangianの決定で重要になる。
 \[
 |\varDelta\bm{x}|=|\varDelta\bm{x}^\prime|
 \]
-が成り立つということである。
+が成り立つということである。(図\ref{fig:newtonian-spacetime})
 
-\subsection{慣性の法則(経験則)}
-\label{sec:inertial}
-他と相互作用をしていない粒子、すなわち自由粒子、の運動が一様な等速直線運動を
-するような基準系、すなわち慣性基準系を見出すことが可能である。
-また、そのような基準系に対して一様な等速直線運動する基準系も慣性基準系であ
-る。
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+  >=Stealth,
+  event/.style={circle,fill=black,inner sep=2pt}
+]
 
-\subsection{自然が持つ時空間に対する対称性(経験則)}
-\label{sec:Symmetry}
-経験則として、ある実験を別の位置で全く同様に行っても同じ結果が出る。これ
-を、自然の法則は空間並進に対して不変、または対称性を持つと言う。(空間の一様
-性)
+%==================================
+% 上段：時間間隔の不変性
+%==================================
+\node[font=\bfseries] at (5,1.2)
+  {時間間隔の不変性};
 
-同様に、どの方向、どの時間でも自然の法則は不変である。(空間の等方性と時間の
-一様性)
+% 基準系 K
+\begin{scope}
+  \node at (2,0.65) {基準系 $K$};
 
-\subsection{慣性基準系間の座標変換―Galileiブーストの導出}
-\label{sec:Galilei Boost}
-慣性基準系 $K$ と それに対して一様な等速度 $\bm{V}$ で運動する慣性基準系 $K^\prime$
-を考える。簡単のため、 $K$ 系と $K^\prime$ 系は時刻 $t=0$ で原点と時刻が一致していて、かつ
-空間座標軸は平行で、同じ向きに取ってあるとする。
-%図
-時空間の一様性から、慣性系間の座標変換はアフィン変換でなければならない。(この証明は付録に載せた)
-\\したがって、$K$系と$K^\prime$系の間には、$3\times3$行列Aおよび、$3\times1$の定ベクトル$\bm{a}$ ,$\bm{B}$、定数$b$を用いて
-\begin{align*}
-\bm{x}^\prime&=A\bm{x}+\bm{B}t+\bm{a}
-\\t^\prime&=t+b
-\end{align*}
-と書ける。今、$t=0$で原点と時刻が一致していることから、$\bm{a}=0 , b=0$ となる。ここで、$K$系から見た$K^\prime$系の原点は
-$\bm{x}=\bm{V}t$ であり、$K^\prime$系では$\bm{x}^\prime=0$より、
-\begin{align*}
-0&=(A\bm{V}+\bm{B})t
-\\
-\therefore \bm{B}&=-A\bm{V}
-\end{align*}
-\[
-\rightarrow \bm{x}^\prime=A(\bm{x}-\bm{V}t)
-\]
-となる。また、同時刻での事象の空間的間隔は等しいため、
-\begin{equation}
-|\bm{x}_2^\prime-\bm{x}_1^\prime|^2=|\bm{x}_2-\bm{x}_1|^2
-\label{eq:len}
-\end{equation}
-でなければならない。この時、$\bm{x}_2^\prime-\bm{x}_1^\prime=A(\bm{x}_2-\bm{x}_1)$より、
-\begin{equation}
-|\bm{x}_2^\prime-\bm{x}_1^\prime|^2=(\bm{x}_2-\bm{x}_1)^TA^TA(\bm{x}_2-\bm{x}_1)
-\label{eq:Alen}
-\end{equation}
-(\refeq{eq:len})と(\refeq{eq:Alen})より、
-\[
-A^TA=I \quad (Iは単位行列)
-\]
-となる。これを満たす行列Aの集合は直交行列であり、反転を除くと$A\in SO(3)$ である。
-今は特に、座標軸が互いに平行で同じ向き場合を考えているため、$A=I$ となる。
-\\以上より、求めたかったGalileiブーストは、
-\begin{align}
-\bm{x}^\prime&=\bm{x}-\bm{V}t
-\label{eq:Galilei Trans}
-\\t^\prime&=t
-\end{align}
-となる。位置の原点、時刻の原点および座標軸の取り方を一般化すると、
-\[
-\bm{x}'=A(\bm{x}-\bm{V}t)+\bm{a},\qquad t'=t+b
-\]
-となる。($A\in SO(3)$)$\quad$これは一般のGalilei変換であり、式(3)、(4)はそのうちブースト部分を表す。
+  \draw[->] (0,0) -- (4.3,0) node[right] {$t$};
 
-\subsection{Galileiの相対性原理(経験則)}
-あらゆる慣性基準系において、力学の法則は同じである。いいかえると、力学を記
-述する方程式は、異なる慣性基準系の座標と時間を使って書いても、すべて同じ形に
-なる。
+  \node[event] at (0.7,0) {};
+  \node[event] at (3.0,0) {};
 
+  \node[above] at (0.7,0.08) {$A$};
+  \node[above] at (3.0,0.08) {$B$};
 
-\subsection{運動の決定論(経験則)}
+  \node[below] at (0.7,0) {$t_A$};
+  \node[below] at (3.0,0) {$t_B$};
+
+  \draw[densely dashed,gray] (0.7,-0.35) -- (0.7,-0.85);
+  \draw[densely dashed,gray] (3.0,-0.35) -- (3.0,-0.85);
+
+  \draw[<->,thick,blue!70!black]
+    (0.7,-0.7) -- (3.0,-0.7)
+    node[midway,below] {$\Delta t$};
+\end{scope}
+
+% 基準系 K'
+\begin{scope}[xshift=5.7cm]
+  \node at (2,0.65) {基準系 $K'$};
+
+  \draw[->] (0,0) -- (4.3,0) node[right] {$t'$};
+
+  \node[event] at (1.1,0) {};
+  \node[event] at (3.4,0) {};
+
+  \node[above] at (1.1,0.08) {$A$};
+  \node[above] at (3.4,0.08) {$B$};
+
+  \node[below] at (1.1,0) {$t'_A$};
+  \node[below] at (3.4,0) {$t'_B$};
+
+  \draw[densely dashed,gray] (1.1,-0.35) -- (1.1,-0.85);
+  \draw[densely dashed,gray] (3.4,-0.35) -- (3.4,-0.85);
+
+  \draw[<->,thick,blue!70!black]
+    (1.1,-0.7) -- (3.4,-0.7)
+    node[midway,below] {$\Delta t'$};
+\end{scope}
+
+\node at (5,-1.55)
+  {$\Delta t=t_B-t_A=t'_B-t'_A=\Delta t'$};
+
+%==================================
+% 下段：同時刻の空間距離の不変性
+%==================================
+\node[font=\bfseries] at (5,-2.5)
+  {同時刻の空間距離の不変性};
+
+% 基準系 K
+\begin{scope}[yshift=-6.1cm]
+  \node at (2,2.9)
+    {基準系 $K$：$t_C=t_D$};
+
+  \draw[->] (0,0) -- (4.3,0) node[right] {$x$};
+  \draw[->] (0,0) -- (0,2.5) node[above] {$y$};
+  \node[below left] at (0,0) {$O$};
+
+  \coordinate (C) at (0.8,0.7);
+  \coordinate (D) at (3.1,1.8);
+
+  % 二事象を結ぶ変位ベクトル
+  \draw[->,thick,blue!70!black] (C) -- (D)
+    node[midway,above,sloped] {$\Delta\bm{x}$};
+
+  \node[event] at (C) {};
+  \node[event] at (D) {};
+
+  \node[below] at (C) {$C:\ \bm{x}_C$};
+  \node[above] at (D) {$D:\ \bm{x}_D$};
+\end{scope}
+
+% 基準系 K'
+\begin{scope}[xshift=5.7cm,yshift=-6.1cm]
+  \node at (2,2.9)
+    {基準系 $K'$：$t'_C=t'_D$};
+
+  \draw[->] (0,0) -- (4.3,0) node[right] {$x'$};
+  \draw[->] (0,0) -- (0,2.5) node[above] {$y'$};
+  \node[below left] at (0,0) {$O'$};
+
+  % 同じ長さの変位を、異なる成分で表示
+  \coordinate (Cp) at (0.7,1.9);
+  \coordinate (Dp) at (3.0,0.8);
+
+  \draw[->,thick,blue!70!black] (Cp) -- (Dp)
+    node[midway,above,sloped] {$\Delta\bm{x}'$};
+
+  \node[event] at (Cp) {};
+  \node[event] at (Dp) {};
+
+  \node[above] at (Cp) {$C:\ \bm{x}'_C$};
+  \node[below] at (Dp) {$D:\ \bm{x}'_D$};
+\end{scope}
+
+\node at (5,-6.9)
+  {$|\Delta\bm{x}|=|\Delta\bm{x}'|
+    \qquad (\Delta t=\Delta t'=0)$};
+
+\end{tikzpicture}
+\caption{古典力学における時間間隔と同時刻の空間距離の不変性。
+左右は同じ事象を異なる基準系で記述したものである。
+空間は2次元で模式的に示した。}
+\label{fig:newtonian-spacetime}
+\end{figure}
+
+\subsection{運動の決定性(経験則)}
 \label{sec:Motion}
 3次元空間において拘束のない $N$ 個の粒子系の力学的自由度は $3N$ である。粒子の位置を記述
 するために一般化座標 $\bm{q}(t)=\bigl(q_1(t),q_2(t),\ldots,q_{3N}(t)\bigr)$
 を定義し、一般化速度をその導関数として $\dot{\bm{q}}(t)=\bigl(\dot{q}_1(t),\dot{q}_2(t),\ldots,\dot{q}_{3N}(t)\bigr)$
 と定義する。
 
-古典力学では経験則として、系の瞬間的な状態を $\qv(t)$ と $\dot{\qv}(t)$ により完全に指定でき、その状態がその直後の時間発展を決定する。
-このことはすなわち、粒子の加速度が位置と速度の関数で表せることを意味する。
+古典粒子力学では、ある時刻に \(q,\dot q\) を指定すると、
+その直後の時間発展が一意に定まることを経験則として仮定する。
+このことはすなわち、粒子の加速度が位置と速度の関数で一意的に表せることを意味する。
 \begin{equation}
 \ddot{\bm{q}}(t)=\bm{f}\bigl(\bm{q}(t),\dot{\bm{q}}(t),t\bigr)
 \label{eq:accelaration}
@@ -161,6 +267,8 @@ A^TA=I \quad (Iは単位行列)
 次の節で運動方程式(\refeq{eq:accelaration})を与える方法(原理)を示す。
 
 \section{停留作用の原理}
+
+\subsection{Lagrangianと作用}
 粒子の運動は停留作用の原理から与えられ、おのおのの系はLagrangianと呼ばれる関数 $\La$ で記述される。
 \ref{sec:Motion} 節より、運動方程式は 2 階の微分方程式である。そのため、古典力学の運動方程式を高々2階に保つためLagrangian $\La$ は
 $\qv(t)$ , $\dot{\qv}(t)$ , $t$ の関数であると仮定する。
@@ -168,11 +276,90 @@ $\qv(t)$ , $\dot{\qv}(t)$ , $t$ の関数であると仮定する。
 \[
 S[\qv(t)]:=\int_{t_i}^{t_f}dt\Laq
 \]
-作用は粒子の軌道 $\qv(t)$ を一つ定めると値が決まるという関係にある。
+作用は粒子の軌道 $\qv(t)$ を一つ定めると値が決まるという関係にある。(図\ref{fig:Mapping})
 \[
 \qv(t) \longmapsto S[\qv(t)]
 \]
-%図
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth]
+
+% 座標軸
+\draw[->] (0,0) -- (5.7,0) node[right] {$t$};
+\draw[->] (0,0) -- (0,3.3) node[above] {$q$};
+\node[below left] at (0,0) {$O$};
+
+% 元の経路 q(t)
+\draw[very thick]
+  (1.1,1.2)
+  .. controls (1.8,2.5) and (3.0,2.7) ..
+  (3.8,2.15)
+  .. controls (4.3,1.85) and (4.8,1.9) ..
+  (5.1,2.1);
+
+\node[above] at (2.6,2.55) {$q(t)$};
+
+% 変分した経路 q(t)+εg(t)
+\draw[thick]
+  (1.1,1.2)
+  .. controls (1.8,2.1) and (3.0,2.25) ..
+  (3.8,1.82)
+  .. controls (4.3,1.6) and (4.8,1.75) ..
+  (5.1,2.1);
+
+\node[below] at (2.9,1.75)
+  {$q(t)+\varepsilon g(t)$};
+
+% 変分を表す矢印
+\draw[->] (2.0,2.15) -- (2.0,1.88);
+\draw[->] (2.7,2.45) -- (2.7,2.10);
+\draw[->] (3.4,2.35) -- (3.4,1.98);
+\draw[->] (4.1,2.00) -- (4.1,1.72);
+
+% 端点
+\fill (1.1,1.2) circle (1.5pt);
+\fill (5.1,2.1) circle (1.5pt);
+
+\draw[dashed] (1.1,0) -- (1.1,1.2);
+\draw[dashed] (5.1,0) -- (5.1,2.1);
+
+\node[below] at (1.1,0) {$t_i$};
+\node[below] at (5.1,0) {$t_f$};
+
+% 作用値が属する実数軸
+\draw[->] (7.5,0.7) -- (7.5,3.4)
+  node[above] {$\mathbb{R}$};
+
+% q(t) から S[q] への写像
+\draw[->,thick]
+  (3.3,2.45)
+  to[out=35,in=160]
+  node[pos=0.48,above] {$S$}
+  (7.5,2.55);
+
+% 変分した経路から作用値への写像
+\draw[->,thick]
+  (4.1,1.72)
+  to[out=-5,in=200]
+  (7.5,1.85);
+
+% 作用値
+\fill (7.5,2.55) circle (2pt);
+\fill (7.5,1.85) circle (2pt);
+
+\node[right] at (7.5,2.55) {$S[q]$};
+\node[right] at (7.5,1.85)
+  {$S[q+\varepsilon g]$};
+
+\end{tikzpicture}
+
+\caption{端点を固定した経路の変分と作用の変化}
+\label{fig:Mapping}
+\end{figure}
+
+
+\subsection{Euler-Lagrange方程式}
 停留作用の原理とは、まず境界条件として、時刻 $t_i$ と $t_f$ での粒子の位置を固定させ
 る。この条件の下で時刻 $t_i$ から $t_f$ までのあらゆる軌道のうち、作用が停留するよう
 な軌道を自然は選ぶということである。
@@ -196,7 +383,7 @@ S[\qv(t)]:=\int_{t_i}^{t_f}dt\Laq
 \delta S[\qv(t)]&:=S[\qv(t)+\epsilon\bm{g}(t)]-S[\qv(t)]
 \\&=\intS\La\bigl(\qv(t)+\epsilon\bm{g}(t),\dot{\qv}(t)+\epsilon\dot{\bm{g}}(t),t\bigr)-\intS\Laq
 \\&=\epsilon\intS\Bigl[\pdv{\Laq}{\qv(t)}\cdot\bm{g}(t)+\pdv{\Laq}{\dot{\qv}(t)}\cdot\dot{\bm{g}}(t)\Bigr]+\mathcal{O}(\epsilon^2)
-\\&=\epsilon\intS\bm{g}(t)\cdot\Bigl[\ELeq\Bigr]+\mathcal{O}(\epsilon^2)
+\\&=-\epsilon\intS\bm{g}(t)\cdot\Bigl[\ELeq\Bigr]+\mathcal{O}(\epsilon^2)
 \end{align*}
 となる。ここで、4行目の計算では積分第二項を部分積分し、境界条件(\refeq{eq:boundry})を用いた。
 \\停留条件は、$\epsilon$ の一次の項が0となることである。
@@ -204,7 +391,7 @@ S[\qv(t)]:=\int_{t_i}^{t_f}dt\Laq
 \[
 \intS\bm{g}(t)\cdot\Bigl[\ELeq\Bigr]=0
 \]
-である。今、$\bm{g}(t)$ は(\refeq{eq:boundry})を満たす任意の関数より、
+である。今、$\bm{g}(t)$ は(\refeq{eq:boundry})を満たす任意の(滑らかな)関数より、
 \begin{equation}
 \ELeq=0
 \label{eq:ELeq}
@@ -214,7 +401,80 @@ S[\qv(t)]:=\int_{t_i}^{t_f}dt\Laq
 る。仮にLagrangianが位置の 2 階時間微分以上の関数に依っていれば、同様の計算か
 ら一般に 2 階より高階な微分方程式が得られてしまうことが確認できる。
 
-\section{対称性によるLagrangianの決定}
+\subsection{Lagrangianの正則性}
+\label{sec:Seisoku}
+Euler-Lagrange方程式(\refeq{eq:ELeq})を展開すると、
+\[
+\sum_{j}\left[\pdv{\La}{\dot{q}_i}{\dot{q}_j}\ddot{q}_j + \pdv{\La}{\dot{q}_i}{q_j}\dot{q}_j\right]+\pdv{\La}{\dot{q}_i}{t}-\pdv{\La}{q_i}=0
+\]
+となる。ここで、
+\[
+W_{ij}:=\pdv{\La}{\dot{q}_i}{\dot{q}_j} \quad g_i:=\sum_{j}-\pdv{\La}{\dot{q}_i}{q_j}\dot{q}_j-\pdv{\La}{\dot{q}_i}{t}+\pdv{\La}{q_i}
+\]
+と定義する。これより、上の式は
+\[
+\sum_{j}W_{ij}\ddot{q}_j=g_i(\qv,\dot{\qv},t)
+\]
+と書きなおせる。
+この時、\ref{sec:Motion}節で仮定したように、$\qv , \dot{\qv} ,t $から $\ddot{\qv}$が一意に定まるためには、
+この連立方程式を加速度について解けなければならない。したがって以下では
+\[
+\det(W)\ne 0 \quad (W:=(W_{ij}))
+\]
+を仮定する。これをLagrangianの正則条件と呼ぶ。これにより、逆行列を左から掛けると、
+\begin{align*}
+\sum_{j,k}(W^{-1})_{ij}W_{jk}\ddot{q}_k&=\sum_{j}(W^{-1})_{ij}g_j
+\\
+\rightarrow \sum_{k}\delta_{ik}\ddot{q}_k&=\sum_{j}(W^{-1})_{ij}g_j
+\end{align*}
+\[\therefore \ddot{q}_i=f_i(\qv,\dot{\qv},t) \quad \left(f_i:=\sum_{j}(W^{-1})_{ij}g_j\right)
+\]
+と、$\ddot{\qv}$ が$\qv , \dot{\qv} ,t $から一意的に定まることが確かめられる。
+
+\subsection{一般化座標変換に対する共変性}
+Euler-Lagrange方程式(\refeq{eq:ELeq})は一般の正則な座標変換
+\[
+q_i=q_i(\bm{Q},t)
+\]
+に対して形を変えない、共変性を持つ。以下にその証明を載せる。
+\\\textbf{証明}
+
+まず、
+\[
+q_i=q_i(\bm{Q},t)
+\]
+より、
+\[
+\dot{q}_i=\sum_{a}\pdv{q_i}{Q_a}\dot{Q_a}+\pdv{q_i}{t}=:\dot{q}_i(\bm{Q},\dot{\bm{Q}},t)
+\]
+これから、
+\begin{align}
+\pdv{\dot{q}_i}{\dot{Q}_a}&=\pdv{q_i}{Q_a}
+\label{eq:1}
+\\ \pdv{\dot{q}_i}{Q_a}&=\frac{d}{dt}\pdv{q_i}{Q_a}
+\label{eq:2}
+\end{align}
+が導かれる。
+今、
+\[
+\La(\bm{q}(\bm{Q},t),\dot{\qv}(\bm{Q},\dot{\bm{Q}},t),t)=:\tilde{\La}(\bm{Q},\dot{\bm{Q}},t)
+\]
+とする。この時、
+\begin{align*}
+\frac{d}{dt}\pdv{\tilde{\La}}{\dot{Q}_a}&=\sum_{i}\left(\frac{d}{dt}\pdv{\La}{\dot{q}_i}\right)\pdv{q_i}{Q_a}+\sum_{i}\pdv{\La}{\dot{q_i}}\frac{d}{dt}\pdv{q_i}{Q_a}
+\\
+\pdv{\tilde{\La}}{Q_a}&=\sum_{i}\pdv{\La}{q_i}\pdv{q_i}{Q_a}+\sum_{i}\pdv{\La}{\dot{q}_i}\frac{d}{dt}\pdv{q_i}{Q_a}
+\end{align*}
+となる。ここで、(\refeq{eq:1})と(\refeq{eq:2})を用いた。
+以上より、
+\[
+\frac{d}{dt}\pdv{\tilde{\La}}{\dot{Q}_a}-\pdv{\tilde{\La}}{Q_a}=\sum_{i}\pdv{q_i}{Q_a}\left(\frac{d}{dt}\pdv{\La}{\dot{q}_i}-\pdv{\La}{q_i}\right)=0
+\]
+となる。右辺では、Euler-Lagrange方程式(\refeq{eq:ELeq})を用いた。また、この時正則より、$\pdv{q_i}{Q_a}$の逆行列を
+掛けると逆を示すこともできる。
+
+したがってEuler–Lagrange方程式の形式は一般化座標の選び方によらない。
+この性質は、後に扱う時空対称変換とは異なり、同じ物理系を異なる座標で記述できるという座標共変性である。$\square$
 
 \subsection{Lagrangianの不定性}
 \label{sec:invariance}
@@ -248,24 +508,140 @@ Lagrangianに位置と時間の任意の関数 $G(\qv(t),t)$ の時間全微分 
 位置、速度、時間に対してある変換を施し、それに対してLagrangianが高々 $\frac{d}{dt}G(\qv(t),t)$
 の変化分になるようなLagrangianの関数形を求める。 
 
-\subsection{対称性による1自由粒子系のLagrangianの決定}
+\section{慣性基準系と自由粒子}
+
+\subsection{慣性基準系の定義とその存在}
+\label{sec:inertial}
+自由粒子の力学法則が、時間並進、空間並進および空間回転に対して不変
+となる基準系を慣性基準系と呼ぶ。したがって、自由粒子の力学法則が時間並進、空間並進および空間回転
+の少なくとも一つに対して不変でなければ基準系を非慣性系と呼ぶ。
+
+この定義を満たす基準系が実際の自然界に存在するかは別問題である。
+以下では、そのような基準系が存在することを経験則として仮定する。(慣性系の存在の仮定)
+\\また、自由粒子に限らず、慣性系で記述する孤立系の力学法則は時間並進、空間並進および空間回転に対して不変
+であることが経験的に知られている。ここで孤立系とは、自分自身の系以外と全く相互作用しない系である。
+
+注意として、外場によって自由粒子でなくなった系の対称性が破れていることは、
+基準系が非慣性系であることを意味しない。慣性系の定義では自由粒子を考える。
+
+\subsection{慣性の法則とその導出}
 \ref{sec:invariance}節で求めたEuler-Lagrange方程式の等価条件を元に、以下の節で課す対称性によって
-許されるLagrangianの形を求める。計算を単純にするため、以下ではデカルト座標系を用い、
+許される自由粒子のLagrangianの形を求める。自由粒子について、空間並進・時間並進・空間回転のすべてに
+対して不変なラグランジアンの代表を選べると仮定する。
+計算を単純にするため、以下ではデカルト座標系を用い、
 粒子の位置を $\bm{x}(t)=\bigl(x(t),y(t),z(t)\bigr)$ として記述する。
 
 \subsubsection{空間並進対称性}
 \label{sec:Trans symmetry}
 空間並進とは、系内の物の位置をすべて同じ一定量だけずらす操作である。この時、配置をずらすだけで、それ以外は変更しない。
+(図\ref{fig:spatial-translation})
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth]
+
+%--------------------
+% 並進前
+%--------------------
+\begin{scope}
+  % 座標軸
+  \draw[->] (0,0) -- (4.0,0) node[right] {$x$};
+  \draw[->] (0,0) -- (0,3.4) node[above] {$y$};
+  \node[below left] at (0,0) {$O$};
+
+  % 粒子の位置
+  \coordinate (A1) at (1.55,2.15);
+  \coordinate (A2) at (2.80,1.55);
+
+  \fill (A1) circle (2.5pt);
+  \fill (A2) circle (2.5pt);
+
+  \node[below] at (A1) {$\bm{x}_1(t)$};
+  \node[below right] at (A2) {$\bm{x}_2(t)$};
+
+  \node at (2.0,-0.65) {並進前};
+\end{scope}
+
+% 空間並進を表す矢印
+\draw[->,very thick]
+  (4.35,1.65) -- (5.25,1.65);
+
+%--------------------
+% 並進後
+%--------------------
+\begin{scope}[xshift=5.6cm]
+  % 座標軸
+  \draw[->] (0,0) -- (4.2,0) node[right] {$x$};
+  \draw[->] (0,0) -- (0,3.4) node[above] {$y$};
+  \node[below left] at (0,0) {$O$};
+
+  % 並進前の位置
+  \coordinate (B1) at (1.55,2.15);
+  \coordinate (B2) at (2.80,1.55);
+
+  % 粒子1、2の速度ベクトル
+\draw[->,thick,blue!70!black]
+  (A1) -- ++(0.70,0.25)
+  node[above] {$\bm{v}_1(t)$};
+
+\draw[->,thick,blue!70!black]
+  (A2) -- ++(0.50,0.50)
+  node[above] {$\bm{v}_2(t)$};
+
+  % 並進後の位置
+  \coordinate (C1) at (2.25,2.75);
+  \coordinate (C2) at (3.50,2.15);
+
+  % 並進後も速度ベクトルは変わらない
+\draw[->,thick,blue!70!black]
+  (C1) -- ++(0.70,0.25)
+  node[above] {$\bm{v}_1(t)$};
+
+\draw[->,thick,blue!70!black]
+  (C2) -- ++(0.50,0.50)
+  node[above] {$\bm{v}_2(t)$};
+
+  % 元の位置を破線の円で表示
+  \draw[densely dashed] (B1) circle (3pt);
+  \draw[densely dashed] (B2) circle (3pt);
+
+  % 並進ベクトル
+  \draw[->,thick]
+    (B1) -- (C1)
+    node[midway,left] {$\bm a$};
+
+  \draw[->,thick]
+    (B2) -- (C2)
+    node[midway,left] {$\bm a$};
+
+  % 並進後の粒子
+  \fill (C1) circle (2.5pt);
+  \fill (C2) circle (2.5pt);
+
+  \node[above left] at (C1)
+    {$\bm{x}_1(t)+\bm a$};
+
+  \node[right] at (C2)
+    {$\bm{x}_2(t)+\bm a$};
+
+  \node at (2.1,-0.65) {並進後};
+\end{scope}
+
+\end{tikzpicture}
+
+\caption{粒子系に対する空間並進
+$\bm{x}_i(t)\rightarrow \bm{x}_i(t)+\bm a$}
+\label{fig:spatial-translation}
+\end{figure}
+
 数式で書くと、
 \[
 \bm{x}(t)\rightarrow \bm{x}(t)+\bm{a} \quad それ以外変更しない
 \]
-となる。
-\\ \ref{sec:Symmetry}節で述べたように、自然を記述する方程式は空間並進対称性を持つ。
-以下では空間並進対称性を持つためのLagrangianの形を求める。
+\ref{sec:inertial}節で述べたように、慣性基準系において、自由粒子を記述する方程式は空間並進対称性を持つ。
+以下では空間並進対称性を持つための自由粒子のLagrangianの形を求める。
 
-代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは空間並進に対して変化しないものを代表
-にとる。この時、明らかにLagrangianは $\bm{x}(t)$ に依らないものと分かる。一応、証明は以下の通りである。
+自由粒子の代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは空間並進に対して変化しないものを代表
+にとれると仮定する。この時、明らかにLagrangianは $\bm{x}(t)$ に依らないものと分かる。一応、証明は以下の通りである。
 \\$\textbf{証明}$
 
 任意の空間並進 $\bm{a}$ を用いて微小な空間並進変換を
@@ -300,19 +676,116 @@ Lagrangianの代表としてLagrangianが変化しない時、すなわち $\fra
 
 \subsubsection{時間並進対称性}
 \label{sec:time symmetry}
-時間並進とは、系内の物の位置や速度は変化させず、実験を行う時間だけを変更させる操作である。数式で書くと、
+時間並進とは、系内の物の位置や速度は変化させず、実験を行う時間だけを変更させる操作である。(図\ref{fig:time-translation})
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth]
+
+%--------------------
+% 時間並進前
+%--------------------
+\begin{scope}
+  % 座標軸
+  \draw[->] (0,0) -- (4.0,0) node[right] {$x$};
+  \draw[->] (0,0) -- (0,3.1) node[above] {$y$};
+  \node[below left] at (0,0) {$O$};
+
+  % 粒子
+  \coordinate (A1) at (1.45,2.05);
+  \coordinate (A2) at (2.75,1.45);
+
+  \fill (A1) circle (2.5pt);
+  \fill (A2) circle (2.5pt);
+
+  \node[above] at (A1) {$\bm{x}_1$};
+  \node[above right] at (A2) {$\bm{x}_2$};
+
+  % 速度ベクトル
+  \draw[->,thick,blue!70!black]
+    (A1) -- ++(-0.45,-0.50)
+    node[below] {$\bm{v}_1$};
+
+  \draw[->,thick,blue!70!black]
+    (A2) -- ++(0.40,-0.52)
+    node[below right] {$\bm{v}_2$};
+
+  % 時計
+  \coordinate (ClockA) at (2.0,3.65);
+  \draw[thick] (ClockA) circle (0.34);
+  \draw[thick] (ClockA) -- ++(0,0.25);
+  \draw[thick] (ClockA) -- ++(0.22,0);
+  \fill (ClockA) circle (1.2pt);
+
+  \node[right] at (2.45,3.65) {時刻 $t$};
+\end{scope}
+
+% 時間並進
+\draw[->,very thick]
+  (4.30,1.60) -- (5.20,1.60);
+
+%--------------------
+% 時間並進後
+%--------------------
+\begin{scope}[xshift=5.6cm]
+  % 座標軸
+  \draw[->] (0,0) -- (4.0,0) node[right] {$x$};
+  \draw[->] (0,0) -- (0,3.1) node[above] {$y$};
+  \node[below left] at (0,0) {$O$};
+
+  % 時間並進された運動の粒子
+  \coordinate (B1) at (1.45,2.05);
+  \coordinate (B2) at (2.75,1.45);
+
+  \fill (B1) circle (2.5pt);
+  \fill (B2) circle (2.5pt);
+
+  \node[above] at (B1)
+    {$\bm{x}_1$};
+
+  \node[above right] at (B2)
+    {$\bm{x}_2$};
+
+  % 速度ベクトル
+  \draw[->,thick,blue!70!black]
+    (B1) -- ++(-0.45,-0.50)
+    node[below] {$\bm{v}_1$};
+
+  \draw[->,thick,blue!70!black]
+    (B2) -- ++(0.40,-0.52)
+    node[below right] {$\bm{v}_2$};
+
+  % 時間並進後の時計
+  \coordinate (ClockB) at (2.0,3.65);
+  \draw[thick] (ClockB) circle (0.34);
+  \draw[thick] (ClockB) -- ++(0.17,0.22);
+  \draw[thick] (ClockB) -- ++(-0.15,-0.18);
+  \fill (ClockB) circle (1.2pt);
+
+  \node[right] at (2.45,3.65)
+    {時刻 $t+t_0$};
+\end{scope}
+
+\end{tikzpicture}
+
+\caption{時間並進によって、時刻$t$の運動状態を
+時刻$t+t_0$へ移した様子}
+\label{fig:time-translation}
+\end{figure}
+
+数式で書くと、
 \[
 t\rightarrow t+t_0 \quad の時、 \quad \bm{x}(t)\quad \dot{\bm{x}}(t) \quad は変化させない。 
 \]
 となる。
-\\自然の法則は時間並進対称性を持つ。
-代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは時間並進に対して変化しないものを代表
-にとる。この時、明らかにLagrangianは $t$ に陽に依らないとわかる。一応、証明は以下の通りである。
+\\\ref{sec:inertial}節より、慣性基準系において自由粒子の法則は時間並進対称性を持つ。
+自由粒子の代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは時間並進に対して変化しないものをとれると仮定する。
+この時、明らかにLagrangianは $t$ に陽に依らないとわかる。一応、証明は以下の通りである。
 \\\textbf{証明}
 
 任意の時間並進 $t_0$ を用いて微小な時間並進変換を
 \[
-t\rightarrow t+\epsilon t_0:=t'
+t\rightarrow t+\epsilon t_0
 \]
 とする。
 この時Lagrangianは、
@@ -328,27 +801,133 @@ t\rightarrow t+\epsilon t_0:=t'
 が得られる。すなわち、Lagrangianは時間に陽に依らないことが分かった。 $\square$
 
 \subsubsection{空間回転対称性}
-空間回転とは、系内の物をすべてある軸周りに一定の角度だけ回転させる操作である。数式で書くと、
+空間回転とは、系内の物をすべてある軸周りに一定の角度だけ回転させる操作である。この時
+速度も回転する。
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+  >=Stealth,
+  velocity/.style={->,thick,blue!70!black}
+]
+
+%--------------------
+% 回転前
+%--------------------
+\begin{scope}
+  \draw[->] (0,0) -- (4.1,0) node[right] {$x$};
+  \draw[->] (0,0) -- (0,4.0) node[above] {$y$};
+  \node[below left] at (0,0) {$O$};
+
+  \coordinate (A1) at (1.8,1.8);
+  \coordinate (A2) at (3.0,0.8);
+
+  % 位置ベクトルの補助線
+  \draw[gray,densely dashed] (0,0) -- (A1);
+  \draw[gray,densely dashed] (0,0) -- (A2);
+
+  % 粒子
+  \fill (A1) circle (2.5pt);
+  \fill (A2) circle (2.5pt);
+
+  \node[above right] at (A1) {$\bm{x}_1(t)$};
+  \node[below right] at (A2) {$\bm{x}_2(t)$};
+
+  % 速度
+  \draw[velocity] (A1) -- ++(-0.55,0.35)
+    node[left] {$\bm{v}_1(t)$};
+  \draw[velocity] (A2) -- ++(0.35,0.55)
+    node[right] {$\bm{v}_2(t)$};
+
+  \node at (2.0,-0.6) {回転前};
+\end{scope}
+
+% 変換の矢印
+\draw[->,very thick] (4.35,1.8) -- (5.25,1.8)
+  node[midway,above] {$R$};
+
+%--------------------
+% 回転後
+%--------------------
+\begin{scope}[xshift=5.8cm]
+  % 座標軸は回転させない
+  \draw[->] (0,0) -- (4.1,0) node[right] {$x$};
+  \draw[->] (0,0) -- (0,4.0) node[above] {$y$};
+  \node[below left] at (0,0) {$O$};
+
+  % 元の配置を薄く表示
+  \draw[gray,densely dashed] (0,0) -- (1.8,1.8);
+  \draw[gray,densely dashed] (0,0) -- (3.0,0.8);
+  \draw[gray,densely dashed] (1.8,1.8) circle (3pt);
+  \draw[gray,densely dashed] (3.0,0.8) circle (3pt);
+
+  % 位置と速度をまとめて30度回転
+  \begin{scope}[rotate=30]
+    \coordinate (B1) at (1.8,1.8);
+    \coordinate (B2) at (3.0,0.8);
+
+    \draw[gray,densely dashed] (0,0) -- (B1);
+    \draw[gray,densely dashed] (0,0) -- (B2);
+
+    \fill (B1) circle (2.5pt);
+    \fill (B2) circle (2.5pt);
+
+    \draw[velocity] (B1) -- ++(-0.55,0.35)
+      coordinate (V1);
+    \draw[velocity] (B2) -- ++(0.35,0.55)
+      coordinate (V2);
+  \end{scope}
+
+  % ラベルは水平に配置
+  \node[above right] at (B1) {$R\bm{x}_1(t)$};
+  \node[below right] at (B2) {$R\bm{x}_2(t)$};
+  \node[above,velocity] at (V1) {$R\bm{v}_1(t)$};
+  \node[right,velocity] at (V2) {$R\bm{v}_2(t)$};
+
+  % 粒子1の位置ベクトルの回転角
+  \draw[->] (45:1.15)
+    arc[start angle=45,end angle=75,radius=1.15];
+  \node at (60:1.45) {$\theta$};
+
+  \node at (2.0,-0.6) {回転後};
+\end{scope}
+
+\end{tikzpicture}
+\caption{原点まわりの空間回転。
+各粒子の位置と速度を同じ回転$R$で変換する。}
+\label{fig:spatial-rotation}
+\end{figure}
+
+数式で書くと、
 \[
-\bm{x}(t)\rightarrow R\bm{x}(t) \quad \dot{\bm{x}}(t) \rightarrow R\dot{\bm{x}}(t) \quad t\rightarrow t \quad (R\in SO(3))
+\bm{x}(t)\rightarrow R\bm{x}(t) \quad \dot{\bm{x}}(t) \rightarrow R\dot{\bm{x}}(t) \quad t\rightarrow t \quad R\in \text{SO(3)}
 \]
-である。$SO(3)$ とは特殊直交群と呼ばれる行列の集合であり、$R^TR=RR^T=I\quad かつ\quad det(R)=1$ を満たすものである。
-\\自然の法則は空間回転対称性を持つ。代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは空間回転に対して変化しないものを代表
-にとる。空間回転に対して不変な量はスカラー量である。
-よって、代表のLagrangianは $\dot{\bm{x}}(t)$ の内積で表された関数しか許されず、一般に
+SO(3)とは特殊直交群と呼ばれる行列の集合であり、$R^TR=RR^T=I\quad かつ\quad \det(R)=1$ を満たすものである。
+
+慣性基準系において、自由粒子の法則は空間回転対称性を持つ。代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは空間回転に対して変化しないものをとれると仮定する。
+空間回転に対して不変な量はスカラー量である必要がある。
+よって、代表のLagrangianは $\dot{\bm{x}}(t)$ の内積$\dot{\bm{x}}^2$で表された関数しか許されず、一般に
 \[
 \La(\dot{\bm{x}}^2(t))
 \]
 として書ける。ここで、\ref{sec:Trans symmetry}と\ref{sec:time symmetry}の結果を使って位置と時間に陽に依らないとした。
 証明は簡単で、以下のようになる。
 
-\textbf{証明}
+\textbf{証明(必要性)}
+\\回転不変な速度の関数は方向には依らず、したがって速度の長さだけに依存する必要がある。
+速度の大きさ $|\dot{\bm{x}}|$は$\sqrt{\dot{\bm{x}}^2}$と書けるため結局、$\La(\dot{\bm{x}}^2)$であることが示される。$\square$
+
+\textbf{証明(十分性)}
 \[
 \dot{\bm{x}}'^2=(R\dot{\bm{x}})^2=(R\dot{\bm{x}})^T(R\dot{\bm{x}})=\dot{\bm{x}}^TR^TR\dot{\bm{x}}=\dot{\bm{x}}^2
 \]
-ここで、特殊直交行列の性質 $R^TR=I$ を用いた。$\square$
+ここで、特殊直交行列の性質 $R^TR=I$ を用いた。
+よって、\[
+\La(\dot{\bm{x}}'^2)=\La(\dot{\bm{x}}^2)
+\]
+$\square$
 
-以上の議論は $G=0$ である場合の自明なLagrangianを求めたが、一般に $G\ne0$ とすると
+以上の議論は $G=0$ である場合の厳密に不変な代表Lagrangianを求めたが、一般に $G\ne0$ とすると
 Lagrangianの形はこの限りでない。例えば、時間並進、空間回転に対してLagrangianは不変だが、
 空間並進に対して Lagrangianの変化が $G(\bm{x},t)$ の時間全微分で書けるものの一つとして、
 \[
@@ -356,16 +935,142 @@ Lagrangianの形はこの限りでない。例えば、時間並進、空間回�
 \]
 の1次までの関数形があげられる。この時、
 $$\bm{x}\cdot\dot{\bm{x}}=\frac{1}{2}\frac{d}{dt}(\bm{x})^2$$
-となり、この項自身が時間の全微分である。少し先取りするが、$\bm{x}\cdot\dot{\bm{x}}$は、Galileiブーストに対しても
-この項自身が時間の全微分になるため、初めから除外しても良い。
+となり、この項自身が時間の全微分である。よって、Lagrangianの不定性から、初めから除外しても良い。
 
-\subsubsection{Galileiブースト対称性}
-ここまでの議論で、代表のLagrangianの関数形は
+以上より、自由粒子の代表のLagrangianは
+\[
+\La=\La(\dot{\bm{x}}^2)
+\]
+の形まで求まった。ここで、Euler-Lagrange方程式(\refeq{eq:ELeq})より、
+\[
+\frac{d}{dt}\pdv{\La(\dot{\bm{x}}^2)}{\dot{\bm{x}}}=0
+\]
+が導かれる。ここで、
+\[
+\bm{p}(\dot{\bm{x}}):=\pdv{\La(\dot{\bm{x}}^2)}{\dot{\bm{x}}}
+\]
+とする。
+\[
+\dv{\bm{p}(\dot{\bm{x}})}{t}=0
+\]
+より、
+\[
+\sum_{j}\pdv{p_i}{\dot{x}_j}\ddot{x}_j=0 \quad \Leftrightarrow \quad \sum_{j}\pdv{\La}{\dot{x}_i}{\dot{x}_j}\ddot{x}_j=0
+\]
+となる。\ref{sec:Seisoku}節で仮定したように、$\det(\pdv{\La}{\dot{x}_i}{\dot{x}_j})\ne 0$
+より、左から逆行列を掛けると、
+\[
+\ddot{x}_i=0
+\]
+すなわち、
+\[
+\dot{\bm{x}}=一定
+\]
+が得られる。こうして、慣性基準系の定義からLagrangian
+に対称性による制限を課すことによって自由粒子は等速直線運動すること、すなわち慣性の
+法則が導かれた。
+
+\subsection{慣性系間の座標変換(Galileiブースト)}
+\label{sec:Galilei Boost}
+慣性基準系 $K$ と それに対して一様な等速度 $\bm{V}$ で運動する慣性基準系 $K^\prime$
+を考える。簡単のため、 $K$ 系と $K^\prime$ 系は時刻 $t=0$ で原点と時刻が一致していて、かつ
+空間座標軸は平行で、同じ向きに取ってあるとする。(図\ref{fig:galilei-boost})
+
+一般のGalilei変換の証明は長くなるので補足に載せた。付録の(\refeq{eq:Galilei General})と(\refeq{eq:Galilei General2})式より、
+今の場合$t=0$で原点と時刻が一致していることから、$\bm{d}=0 , b=0$ となる。
+また、今は、座標軸が互いに平行で同じ向きの場合を考えているため、$R=I$ となる。
+\\以上よりGalileiブーストは、
+\begin{align}
+\bm{x}^\prime&=\bm{x}-\bm{V}t
+\label{eq:Galilei Trans}
+\\t^\prime&=t
+\label{eq:Galilei Trans2}
+\end{align}
+となる。
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth]
+
+  % 原点と事象
+  \coordinate (O)  at (0,0);
+  \coordinate (Op) at (3.3,0.5);
+  \coordinate (P)  at (5.3,2.7);
+
+  % 基準系 K
+  \draw[->,thick] (O) -- (7.0,0)
+    node[right] {$x$};
+  \draw[->,thick] (O) -- (0,3.7)
+    node[above] {$y$};
+
+  \node[below left] at (O) {$O$};
+  \node[above right] at (0,3.2) {基準系 $K$};
+
+  % 基準系 K'：原点を右上へ移動
+  \draw[->,thick] (Op) -- (6.7,0.5)
+    node[right] {$x'$};
+  \draw[->,thick] (Op) -- (3.3,3.7)
+    node[above] {$y'$};
+
+  \node[below right] at (Op) {$O'$};
+  \node[above right] at (3.3,3.2) {基準系 $K'$};
+
+  % 相対速度：OO' と平行
+  \draw[->,very thick]
+    (3.8,3.9) -- ++(1.32,0.20)
+    node[midway,above] {$\bm V$};
+
+  % K から見た位置ベクトル
+  \draw[->,very thick,blue!70!black]
+    (O) -- (P)
+    node[pos=0.43,above left] {$\bm{x}$};
+
+  % K' から見た位置ベクトル
+  \draw[->,very thick,orange!80!black]
+    (Op) -- (P)
+    node[pos=0.55,right] {$\bm{x}'$};
+
+  % 原点間の変位
+  \draw[->,thick,gray!75!black]
+    (O) -- (Op)
+    node[midway,above,sloped] {$\bm Vt$};
+
+  % 同じ事象
+  \fill (P) circle (2.8pt);
+  \node[above right,align=left] at (P)
+    {同じ事象 $P$\\時刻 $t'=t$};
+
+  % 初期条件と位置ベクトルの関係
+  \node at (3.5,-0.65)
+    {$t=t'=0$ で原点 $O,O'$ は一致};
+
+  \node at (3.5,-1.25)
+    {$\bm{x}=\bm Vt+\bm{x}'
+      \qquad\Longrightarrow\qquad
+      \bm{x}'=\bm{x}-\bm Vt$};
+
+\end{tikzpicture}
+\caption{Galileiブーストの幾何学的関係。
+$K'$は$K$に対して一定速度$\bm V$で運動する。
+両系の座標軸は平行で同じ向きに取り、
+$t>0$における配置を示した。}
+\label{fig:galilei-boost}
+\end{figure}
+
+
+\subsection{Galileiの相対性原理(経験則)と自由粒子のLagrangianの導出}
+あらゆる慣性基準系において、力学の法則は同じである。いいかえると、力学を記
+述する方程式は、異なる慣性基準系の座標と時間を使って書いても、すべて同じ形に
+なる。これをGalileiの相対性原理と呼ぶ。以下では、Lagrangianに対してGalilei変換を適用させ、
+作用を境界項を除いて不変にすることを要請して許される関数形を調べる。(\ref{sec:invariance}節)
+この要請をすることで、Euler-Lagrange方程式はGalilei変換に対して不変になり、したがってGalileiの相対性原理を満たせるからである。
+
+おさらいとして、ここまでの議論で代表のLagrangianの関数形は
 \[
 \La(\dot{\bm{x}}^2(t))
 \]
-まで絞れた。Galileiブーストをするには、粒子を記述する基準系が慣性基準系でないといけないので、今、粒子を記述する基準系を慣性基準系として考える。
-\\自然は慣性基準系同士を取り換えても同じ法則であるという相対性原理が確かめられている。
+まで絞れた。
+\\
 Galileiブーストは\ref{sec:Galilei Boost}節で求めた式(\refeq{eq:Galilei Trans})より、$\epsilon$ を微小な量として
 以下のような微小Galileiブーストを考える。
 \begin{align*}
@@ -377,18 +1082,18 @@ Galileiブーストは\ref{sec:Galilei Boost}節で求めた式(\refeq{eq:Galile
 \[
 \La((\dot{\bm{x}}(t)-\epsilon\bm{V})^2)=\La(\dot{\bm{x}}^2(t))-\pdv{\La(\dot{\bm{x}}^2(t))}{(\dot{\bm{x}}^2(t))}2\bm{V}\cdot\dot{\bm{x}}(t)\epsilon+\mathcal{O}(\epsilon^2)
 \]
-となる。ここで、Lagrangianの代表として $\frac{d}{dt}G_\epsilon(\bm{x}(t),t)=0$ としてしまうと、ちょっと計算すると分かるように、
+となる。ここで、Lagrangianの代表として $\frac{d}{dt}G_\epsilon(\bm{x}(t),t)=0$ とすると、少し計算すると分かるように、
 \[
 \pdv{\La(\dot{\bm{x}}^2(t))}{(\dot{\bm{x}}^2(t))}=0
 \]
 でなければならないことが得られる。
-これはLagrangianが定数であることを意味し、つまらない(今回ほしいものではない)ため除外する。
+これはLagrangianが非正則であることを意味するため除外する。(\ref{sec:Seisoku}節、Lagrangianの正則条件)
 
 Lagrangianの変化分を $\frac{d}{dt}G_\epsilon(\bm{x}(t),t)\ne0$ として考える。まず、$\frac{d}{dt}G_\epsilon(\bm{x}(t),t)$の時間全微分を計算すると、
 \[
 \frac{d}{dt}G_\epsilon(\bm{x}(t),t)=\pdv{G_\epsilon(\bm{x}(t),t)}{\bm{x}(t)}\cdot{\dot{\bm{x}}(t)}+\pdv{G_\epsilon(\bm{x}(t),t)}{t}
 \]
-となる。これと、Euler-Lagrange方程式の等価条件から、
+となる。これと、先に要請した作用の境界項を除く不変性から、
 \[
 -\pdv{\La(\dot{\bm{x}}^2(t))}{(\dot{\bm{x}}^2(t))}2\bm{V}\cdot\dot{\bm{x}}(t)\epsilon+\mathcal{O}(\epsilon^2)
 =\pdv{G_\epsilon(\bm{x}(t),t)}{\bm{x}(t)}\cdot{\dot{\bm{x}}(t)}+\pdv{G_\epsilon(\bm{x}(t),t)}{t}
@@ -415,17 +1120,17 @@ $$G(\bm{x}(t),t)=C(\bm{V}^2t-2\bm{x}(t)\cdot\bm{V})$$
 一粒子の自由運動だけでは $C$ の値を比較・測定できない。相互作用する複数粒子を考えることで、粒子ごとの係数 $C$ の比が運動に影響するようになり、これを慣性質量として解釈できる。
 その説明は\ref{sec:mass}節で行う。
 
-(\refeq{eq:Lagrangian})式をEuler-Lagrange方程式(\refeq{eq:ELeq})に代入すると、
+一応、(\refeq{eq:Lagrangian})式をEuler-Lagrange方程式(\refeq{eq:ELeq})に代入すると、
 \[
 \ddot{\bm{x}}(t)=0
 \]
-が導かれ、これは\ref{sec:inertial}節で仮定した慣性の法則と整合している。
+が導かれ、慣性の法則を満たすことが確認できる。
 
-\subsection{2粒子相互作用系のLagrangian}
-\subsubsection{Lagrangianの加法性(仮定)}
+\section{2粒子相互作用系のLagrangian}
+\subsection{Lagrangianの加法性(仮定)}
 \label{sec:Additive}
-今、力学系が2つの孤立系AとBから成り立っていて、各々の系のLagrangianが$\La_A$ , $\La_B$
-で与えられていたとする。ここで孤立系とは、自分自身の系以外と全く相互作用しない系であり、今の場合系AとBは孤立系なので、互いに全く相互作用しないとする。
+今、力学系が2つの孤立系AとBから成り立っていて、互いに相互作用していないとする。各々の系のLagrangianは$\La_A$ , $\La_B$
+で与えられていたとする。
 この時、全体系のLagrangianは
 \[
 \La=\La_A + \La_B
@@ -433,8 +1138,8 @@ $$G(\bm{x}(t),t)=C(\bm{V}^2t-2\bm{x}(t)\cdot\bm{V})$$
 となる。このLagrangianの加法性は、互いに相互作用していない各系のLagrangianは自分以外の系の量を含むことは
 ないという事実を表現している。
 
-\subsubsection{対称性による相互作用項の制限}
-互いに相互作用しない、二つの自由粒子1と2の全体系のLagrangianは\ref{sec:Additive}及び\refeq{eq:Lagrangian}より、
+\subsection{対称性による相互作用項の制限}
+互いに相互作用しない、二つの自由粒子1と2の全体系のLagrangianは\ref{sec:Additive}節及び(\refeq{eq:Lagrangian})式より、
 \[
 \La=\La_1 + \La_2 =C_1\dot{\bm{x}}_1^2+C_2\dot{\bm{x}}_2^2
 \]
@@ -456,16 +1161,16 @@ $$G(\bm{x}(t),t)=C(\bm{V}^2t-2\bm{x}(t)\cdot\bm{V})$$
 \]
 等に依る形が許される。
 
-次に、空間並進に対してLagrangianの変化が高々 $G(\bm{x}(t),t)$ の全微分であるものは以下のものがあげられる。
+次に、空間並進に対してLagrangianの変化が高々 $G(\bm{x}(t),t)$ の全微分であるものの例としては以下のものがあげられる。
 \[
 |\bm{x}_2-\bm{x}_1| \quad \dot{\bm{x}}_i\cdot\dot{\bm{x}}_jの一次 \quad |\dot{\bm{x}}_2-\dot{\bm{x}}_1| \quad \bm{x}_i\cdot\dot{\bm{x}}_jの一次 \quad (i,j=1,2)
 \]
-
-さらに、Galileiブースト対称性から、Lagrangianの変化が高々 $G(\bm{x}(t),t)$ の全微分であるものは以下のものがあげられる。
+(この他にもあり得る)
+さらに、Galileiブースト対称性から、Lagrangianの変化が高々 $G(\bm{x}(t),t)$ の全微分であるものは例として以下のものがあげられる。
 \[
 |\bm{x}_2-\bm{x}_1| \quad \dot{\bm{x}}_i\cdot\dot{\bm{x}}_jの一次 \quad |\dot{\bm{x}}_2-\dot{\bm{x}}_1| \quad (i,j=1,2)
 \]
-
+(この他にもあり得る)
 ここで、粒子1と2との間を相互作用が無視
 できるほど十分遠くまで離せば、\ref{sec:Additive}で述べたように、
 Lagrangianには自分以外の系の量を含まない。
@@ -475,7 +1180,7 @@ Lagrangianには自分以外の系の量を含まない。
 このことから、$\dot{\bm{x}}_1\cdot\dot{\bm{x}}_2$の一次及び$|\dot{\bm{x}}_2-\dot{\bm{x}}_1|$だけの項は除外される。
 また、$|\bm{x}_2-\bm{x}_1|\rightarrow \infty$において、$\La_{12}\rightarrow 0$ となるような相互作用でなければならない。
 したがって、例えば次のような速度を含む相互作用もあり得る。
-$$\frac{|\dot{\bm{x}}_2-\dot{\bm{x}}_1|}{|\bm{x}_2-\bm{x}_1|^n} \quad (n>0)$$
+$$\frac{|\dot{\bm{x}}_2-\dot{\bm{x}}_1|^2}{|\bm{x}_2-\bm{x}_1|^n} \quad (n>0)$$
 (これは時空間の並進、回転、Galileiブースト対称性を満たす。)
 
 以上の対称性だけでは速度依存相互作用は排除できない。
@@ -484,7 +1189,7 @@ $$\frac{|\dot{\bm{x}}_2-\dot{\bm{x}}_1|}{|\bm{x}_2-\bm{x}_1|^n} \quad (n>0)$$
 \[
 \La=C_1\dot{\bm{x}}_1^2+C_2\dot{\bm{x}}_2^2+\La_{12}(|\bm{x}_2-\bm{x}_1|)
 \]
-であるとわかった。ここで、慣習として、$V=-\La_{12}$ に取ると、
+ここで、慣習として、$V=-\La_{12}$ に取ると、
 \begin{equation}
 \La=C_1\dot{\bm{x}}_1^2+C_2\dot{\bm{x}}_2^2-V(|\bm{x}_2-\bm{x}_1|)
 \label{eq:Lagrangian int}
@@ -501,7 +1206,7 @@ $$\frac{|\dot{\bm{x}}_2-\dot{\bm{x}}_1|}{|\bm{x}_2-\bm{x}_1|^n} \quad (n>0)$$
 \label{eq:EOM2}
 \end{align}
 となる。
-ここで、相互作用における力なる物理量を次のように定義する。
+ここで、相互作用における力という物理量を次のように定義する。
 \[
 \bm{F}:=-\pdv{V}{\bm{x}}
 \]
@@ -515,9 +1220,10 @@ $$\frac{|\dot{\bm{x}}_2-\dot{\bm{x}}_1|}{|\bm{x}_2-\bm{x}_1|^n} \quad (n>0)$$
 \[
 \bm{F}_1=-\bm{F}_2
 \]
-なる性質を持つ。これはNewton力学でいう作用反作用の法則である。
+という性質を持つ。これはNewton力学でいう作用反作用の法則である。
+このように、作用反作用の法則は対称性による相互作用項の制限で導かれる。
 
-\subsubsection{慣性質量の定義}
+\subsection{慣性質量の定義}
 \label{sec:mass}
 (\refeq{eq:EOM1})+(\refeq{eq:EOM2})を行うと、
 \[
@@ -530,21 +1236,21 @@ m_1\ddot{\bm{x}}_1=-m_2\ddot{\bm{x}}_2
 \]
 とする。ベクトルの長さに注目すると、
 \[
-\frac{m_1}{m_2}=\frac{|\ddot{\bm{x}}_2|}{|\ddot{\bm{x}}_1|}
+\frac{|m_1|}{|m_2|}=\frac{|\ddot{\bm{x}}_2|}{|\ddot{\bm{x}}_1|}
 \]
 このように、粒子にお互い同じ大きさの力が作用しているとき、粒子
 に発生する加速度の大きさの逆比を慣性質量と定義する。これより慣性質量は、同じ大きさの力に対して、慣性質量
-が大きいほど加速しにくいことを意味する量となる。
+が大きいほど加速しにくいことを意味する量となる。また、自由粒子のエネルギーが下に有界であることを要請し、正の質量を採用する。
 
 以上より、係数$C$の物理的意味が明らかになった。これより、2粒子相互作用系のLagrangianは、
 \begin{equation}
 \La=\frac{1}{2}m_1\dot{\bm{x}}_1^2+\frac{1}{2}m_2\dot{\bm{x}}_2^2-V(|\bm{x}_2-\bm{x}_1|)
 \label{eq:Lagrangian!}
 \end{equation}
-と書ける。\refeq{eq:Lagrangian!}の第一項と第二項はNewton力学でいう運動エネルギーである。
+と書ける。(\refeq{eq:Lagrangian!})式の第一項と第二項はNewton力学でいう運動エネルギーである。
 
 \subsection{基本相互作用項の具体的な関数形}
-速度に依存しない中心力ポテンシャルの代表例として、Newton重力ポテンシャルと静電的Coulombポテンシャルがある。
+速度に依存しない中心力ポテンシャルの代表例として、Newton重力ポテンシャルと静電Coulombポテンシャルがある。
 \[
 V_{重力}=-G\frac{m_1m_2}{|\bm{x}_2-\bm{x}_1|} \qquad V_{電気力}=\frac{1}{4\pi\epsilon_0}\frac{q_1q_2}{|\bm{x}_2-\bm{x}_1|}
 \]
@@ -552,19 +1258,39 @@ V_{重力}=-G\frac{m_1m_2}{|\bm{x}_2-\bm{x}_1|} \qquad V_{電気力}=\frac{1}{4\
 \[
 V_{バネ}=\frac{1}{2}k|\bm{x}_2-\bm{x}_1|^2
 \]
-があるが、これは基本的な相互作用ではない。というのも、2粒子間を繋ぐバネをある程度伸ばすと、バネは壊れる。
-また、バネの相互作用はミクロに見れば電気的相互作用である。
+があるが、これは基本的な相互作用ではない(上の式は自然長が0の理想的な模型)。というのも、
+バネの相互作用はミクロに見れば電気的相互作用に由来する有効な模型だからである。
 
 重力相互作用の形は、天文学的観測によるKeplerの3法則とここまで得た運動方程式から、重力は距離の
-2乗(すなわち対応するポテンシャル$V$は1乗)に反比例することが導かる。さらに、同じ重力法則が任意の二物体間に成り立つことと作用反作用則から、相互作用の強さは二物体の慣性質量の積 \(m_1m_2\) に比例することが分かる。
-$G$はその比例係数で、万有引力定数である。
-
+2乗(すなわち対応するポテンシャル$V$は1乗)に反比例することが導かる。
+\[
+|\bm{F}_{\text{重力}}| \propto \frac{1}{r^2}
+\]
+さらに、同じ重力場に対して、物体が受ける加速度はその落とす物体の性質に依らないという経験則から、粒子2が作る重力場に対して粒子1は
+\begin{align*}
+m_1|\bm{a}_1|&=\frac{C_{12}}{r^2}
+\\
+\rightarrow C_{12}&=m_1A_2 \quad (A_2 は相手の作る重力場の性質を反映した係数)
+\end{align*}
+が得られる。同様に粒子1が作る重力場に対して粒子2は
+\[
+C_{21}=m_2A_1
+\]
+が得られる。これと作用反作用の法則から、
+\[
+m_1A_2=m_2A_1 \quad \Leftrightarrow\quad \frac{A_1}{m_1}=\frac{A_2}{m_2} 
+\]
+が得られる。右側の比は物質の性質に依らないことを意味しており、この比を万有引力定数$G$と定義すると、
+\[
+|\bm{F}_{重力}|=G\frac{m_1m_2}{r^2}
+\]
+となる。
 静電気相互作用の形は、Coulombによるねじり天秤を用いた帯電球同士の引き合い、反発による測定で、万有引力同様距離の2乗(すなわち対応するポテンシャル$V$は1乗)に反比例することが確かめられた。また各物体の電荷量に比例することが経験的に知られた。
 
 さらに重要なことに、今回採用した同時刻の粒子位置だけに依存するポテンシャル模型では、
 相互作用は瞬時に伝わるものとして記述される。
 
-\section{孤立系でないLagrangian}
+\section{孤立系でないLagrangian(Newtonの運動方程式導出)}
 ようやくこれが古典力学のLagrange形式の最後の節だ。今までは孤立系のLagrangianについて議論してきたが、
 一般の力学系を調べるとき、一般には孤立系でない。そこで、この場合にも適用できるLagrangianを考える。
 
@@ -579,7 +1305,7 @@ $G$はその比例係数で、万有引力定数である。
 \[
 K_A(\dot{\bm{x}}_A)=\sum_{i}\frac{1}{2}m_i\dot{\bm{x}}_{Ai}^2 \quad K_B(\dot{\bm{x}}_B)=\sum_{j}\frac{1}{2}m_j\dot{\bm{x}}_{Bj}^2
 \]
-である。系Bは与えられた外場なので、$\bm{x}_{Bj}$の代わりに与えられた時間の関数 $\bm{r}(t)$ を(\refeq{eq:Multi})に代入すると、
+である。系Bは与えられた外場なので、$\bm{x}_{Bj}$の代わりに与えられた時間の関数 $\bm{r}(t)$ を(\refeq{eq:Multi})に代入すると、(ただし、系Aから系Bへの影響は無視できると考える)
 \[
 \La=K_A(\dot{\bm{x}}_A)+\tilde{K}_B(t)-\tilde{V}(\bm{x}_A,t)
 \]
@@ -592,27 +1318,122 @@ K_A(\dot{\bm{x}}_A)=\sum_{i}\frac{1}{2}m_i\dot{\bm{x}}_{Ai}^2 \quad K_B(\dot{\bm
 \[
 m_i\ddot{\bm{x}}_i=-\pdv{V(\bm{x},t)}{\bm{x}_i}=\bm{F}_i
 \]
-となる。これが最終的に導出したかったNewtonの運動方程式である。以上より、
-作用原理と対称性、および位置だけに依存する相互作用という追加仮定から、Newton型の運動方程式と作用反作用則が再構成された。
+となる。これが最終的に導出したかった位置依存の相互作用を持つ粒子系について
+のNewtonの運動方程式である。
 
 \section{特殊相対性理論}
 そのうち書く
 \appendix
-\section{慣性系間の座標変換がアフィン変換であることの証明}
-後々書く
+\section{一般のGalilei変換の導出}
+\label{sec:Hosoku}
+\textbf{証明}
+\\\ref{sec:Spacetime}節より、古典時空は任意の二事象についてK系とK'系において \(t'_2-t'_1=t_2-t_1\) なので、\(t'-t\) は事象によらない定数
+であり、
+\[
+t'=t+b
+\]
+とおける。次に同時刻における距離の不変性から、
+まず時刻 \(t\) を固定し、空間座標の変換を \(\bm x'=f_t(\bm x)\) とおくと
+距離の不変性は、任意の \(\bm x,\bm y\) に対して、
+\[
+|f_t(\bm{x})-f_t(\bm{y})|=|\bm{x}-\bm{y}|
+\]
+と書ける。ここで、
+\[
+\bm{c}(t):=f_t(\bm{0}) \quad h_t(\bm{x}):=f_t(\bm{x})-\bm{c}(t)
+\]
+とおく。これより、
+\begin{equation}
+|h_t(\bm{x})-h_t(\bm{y})|=|f_t(\bm{x})-\bm{c}(t)-f_t(\bm{y})+\bm{c}(t)|=|{f_t(\bm{x})}-f_t(\bm{y})|=|\bm{x}-\bm{y}|
+\label{eq:h}
+\end{equation}
+であり、距離が保存する。$\bm{y}=0$の時、$|h_t(\bm{x})|=|\bm{x}|$ 同様に、$|h_t(\bm{y})|=|\bm{y}|$ が導かれる。
+したがって、
+\[
+|h_t(\bm{x})-h_t(\bm{y})|^2=\bm{x}^2+\bm{y}^2-2h_t(\bm{x})\cdot h_t(\bm{y})
+\]
+であり、一方、(\refeq{eq:h})の最右辺から、
+\[
+|h_t(\bm{x})-h_t(\bm{y})|^2=\bm{x}^2+\bm{y}^2-2\bm{x}\cdot\bm{y}
+\]
+よって、
+\[
+h_t(\bm{x})\cdot h_t(\bm{y})=\bm{x}\cdot\bm{y}
+\]
+と、内積が保存する。したがって、K系での基底$(\bm{e}_i)_{i=1,2,3}$とすると
+\[
+h_t(\bm{e}_i)\cdot h_t(\bm{e}_j)=\bm{e}_i\cdot\bm{e}_j=\delta_{ij}
+\]
+を満たす。これは、$[h_t(\bm{e}_i)]_{i=1,2,3}$が正規直交基底であることを意味する。故に、
+\begin{align*}
+h_t(\bm{x})&=\sum_{i=1}^{3}\left[h_t(\bm{x})\cdot h_t(\bm{e}_i)\right]h_t(\bm{e}_i)
+\\&=\sum_{i=1}^{3}(\bm{x}\cdot\bm{e}_i)h_t(\bm{e}_i)=\sum_{i=1}^{3}x_ih_t(\bm{e}_i)
+\end{align*}
+と展開できる。これを行列を用いて表すと
+\[
+h_t(\bm{x})=R(t)\bm{x} \quad R(t):=\begin{bmatrix}h_t(\bm{e}_1) & h_t(\bm{e}_2) & h_t(\bm{e}_3)\end{bmatrix}
+\]
+$[h_t{\bm{e}_i}]_{i=1,2,3}$が正規直交基底より、$R^TR=I$ と、$R(t)$は直交行列である。
+以上より、
+\[
+\bm{x}'=R(t)\bm{x}+\bm{c}(t)
+\]
+と書ける。最後に慣性系における自由粒子の性質を用いると、ある時刻の慣性系での任意の自由粒子の位置と速度を用いて
+\[
+\frac{d^2}{dt'^2}\bm{x}'(t')=R(t)\ddot{\bm{x}}(t)+\ddot{R}(t)\bm{x}(t)+2\dot{R}(t)\dot{\bm{x}}(t)+\ddot{\bm{c}}(t)
+\]
+から、
+\begin{equation}
+0=\ddot{R}(t)\bm{x}(t)+2\dot{R}(t)\dot{\bm{x}}(t)+\ddot{\bm{c}}(t)
+\label{eq:R}
+\end{equation}
+が得られる。ある時刻と位置を固定させ、速度を任意に取り、異なる$\dot{\bm{x}}_1,\dot{\bm{x}}_2$に関する上の式を引くと、
+\[
+0=2\dot{R}(t)(\dot{\bm{x}}_1-\dot{\bm{x}}_2)
+\]
+が得られる。$\dot{\bm{x}}_1-\dot{\bm{x}}_2$は任意より、$\dot{R}(t)=0$が得られる。(\refeq{eq:R})にこれを代入
+すると、$\ddot{\bm{c}}(t)=0$となる。
+\[
+\therefore \bm{c}(t)=\bm{B}t+\bm{a}
+\]
+と書ける。以上より、
+\begin{align*}
+\bm{x}'&=R\bm{x}+\bm{B}t+\bm{a} \quad R\in \text{O(3)}
+\\t'&=t+b
+\end{align*}
+となる。ここで、$t=0$でK系から見たK'系の原点が$\bm{d}$の時、時刻$t$におけるK'系の原点は$\bm{x}'=0$で、
+$\bm{x}=\bm{d}+\bm{V}t$より、
+\begin{align*}
+0&=R(\bm{d}+\bm{V}t)+\bm{B}t+\bm{a}
+\\&=(R\bm{V}+\bm{B})t+(\bm{a}+R\bm{d})
+\end{align*}
+これが任意の$t$について成立するには
+\[
+\bm{B}=-R\bm{V} \quad \bm{a}=-R\bm{d}
+\]
+であることが必要十分条件である。以上より、一般のGalilei変換は
+\begin{align}
+\bm{x}'&=R[\bm{x}-(\bm{d}+\bm{V}t)] \quad R\in \text{O(3)}
+\label{eq:Galilei General}
+\\
+t'&=t+b
+\label{eq:Galilei General2}
+\end{align}
+となる。この変換は空間並進、時間並進、空間回転、Galileiブーストのすべてを含んでいる。$\square$
+
 
 \addcontentsline{toc}{section}{参考文献}
 \begin{thebibliography}{99}
 \bibitem{landau1}
-「力学」ランダウ、リフシッツ 著 $\quad$ (主にこの本を参考にした)
+「力学」ランダウ、リフシッツ 著 $\quad$ (主にこの本の第1章を参考にした)
 \bibitem{landau2}
-「場の古典論」ランダウ、リフシッツ 著
+「場の古典論」ランダウ、リフシッツ 著 $\quad$ (第1章の特殊相対論と古典力学の時空の違いを参考にした)
 \bibitem{Watanabe}
-「解析力学」渡辺 悠樹 著 $\quad$ (対称性の数学的なところを参考にした)
+「解析力学」渡辺 悠樹 著 $\quad$ (第4章の対称性の数学的なところを参考にした)
 \bibitem{Hatake}
-「解析力学」畑浩之 著 $\quad$ (粒子間の距離無限大で相互作用が0となるところを参考にした)
+「解析力学」畑浩之 著 $\quad$ (第2章の粒子間の距離無限大で相互作用が0となるところを参考にした)
 \bibitem{Harashima}
-「力学」原島 鮮 著 $\quad$ (慣性質量の定義を参考にした)
+「力学」原島 鮮 著 $\quad$ (第2章の慣性質量の定義を参考にした)
 \bibitem{Bluebacks}
 「宇宙を支配する定数」(Blue Backs) 臼田孝 著 $\quad$ (重力、Coulomb力の歴史を参考にした)
 
