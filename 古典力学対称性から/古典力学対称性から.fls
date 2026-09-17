@@ -230,10 +230,18 @@ INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandler
 INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
 INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
 INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.code.tex
+INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarydecorations.markings.code.tex
+INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarydecorations.code.tex
+INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/modules/pgfmoduledecorations.code.tex
+INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/libraries/decorations/pgflibrarydecorations.markings.code.tex
+INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypatterns.code.tex
+INPUT c:/texlive/2026/texmf-dist/tex/generic/pgf/libraries/pgflibrarypatterns.code.tex
+INPUT c:/texlive/2026/texmf-dist/tex/latex/placeins/placeins.sty
 INPUT ./古典力学対称性から.aux
 OUTPUT 古典力学対称性から.aux
 INPUT c:/texlive/2026/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 INPUT c:/texlive/2026/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+INPUT c:/texlive/2026/texmf-dist/tex/latex/grfext/grfext.sty
 INPUT c:/texlive/2026/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 INPUT ./古典力学対称性から.out
 INPUT ./古典力学対称性から.out
@@ -315,6 +323,8 @@ INPUT C:/texlive/2026/texmf-var/luatex-cache/generic/fonts/otl/lmroman5-regular.
 INPUT C:/Users/Kaito/.texlive2026/texmf-var/luatexja/extra_lmroman5-regular.luc
 INPUT C:/texlive/2026/texmf-var/luatex-cache/generic/fonts/otl/lmroman5-bold.luc
 INPUT C:/Users/Kaito/.texlive2026/texmf-var/luatexja/extra_lmroman5-bold.luc
+INPUT C:/texlive/2026/texmf-var/luatex-cache/generic/fonts/otl/lmmono10-regular.luc
+INPUT C:/Users/Kaito/.texlive2026/texmf-var/luatexja/extra_lmmono10-regular.luc
 INPUT ./古典力学対称性から.aux
 INPUT ./古典力学対称性から.out
 INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
@@ -333,6 +343,7 @@ INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb
 INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb
 INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb
 INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
+INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb
 INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb
 INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
 INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb

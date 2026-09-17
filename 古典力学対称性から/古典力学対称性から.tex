@@ -8,7 +8,43 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{physics}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta}
+\usetikzlibrary{
+  arrows.meta,
+  decorations.markings,
+  patterns
+}
+
+\usepackage[section]{placeins}
+\AddToHook{cmd/subsection/before}{\FloatBarrier}
+
+% 二つの図で共通して使う設定
+\tikzset{
+  spacetime axis/.style={
+    semithick,
+    -{Stealth[length=2.3mm]}
+  },
+  spacetime path/.style={
+    thick,
+    postaction={decorate},
+    decoration={
+      markings,
+      mark=at position 0.55 with {
+        \arrow{Stealth[length=2.3mm]}
+      }
+    }
+  },
+  time slice/.style={
+    draw=black!65,
+    thin,
+    pattern=north east lines,
+    pattern color=black!18
+  },
+  event/.style={
+    circle,
+    fill=black,
+    inner sep=1.6pt
+  }
+}
 \newcommand{\qv}{\bm{q}}
 \newcommand{\La}{\mathcal{L}}
 \newcommand{\Laq}{\mathcal{L}(\qv(t),\dot{\qv}(t),t)}
@@ -50,59 +86,12 @@ Lagrangianの決定で重要になる。
 
 自然の中の様々な過程を記述するには基準系が必要である。ここに、基準系とは粒
 子の空間的位置を指定する座標系と、時刻を指定するためのこの系に固定された時計
-とを合わせたものである。(図\ref{fig:reference-frame})
+とを合わせたものである。
 
-\begin{figure}[ht]
-\centering
-\begin{tikzpicture}[>=Stealth]
-
-% 座標軸
-\coordinate (O) at (0,0);
-\coordinate (P) at (2.8,2.2);
-
-\draw[->,thick] (O) -- (4.2,0) node[right] {$x$};
-\draw[->,thick] (O) -- (0,3.3) node[above] {$y$};
-\node[below left] at (O) {$O$};
-
-% 座標を示す補助線
-\draw[gray,densely dashed] (2.8,0) -- (P) -- (0,2.2);
-\node[below] at (2.8,0) {$x(t)$};
-\node[left] at (0,2.2) {$y(t)$};
-
-% 位置ベクトルと粒子
-\draw[->,very thick,blue!70!black]
-  (O) -- (P)
-  node[midway,above left] {$\bm{x}(t)$};
-
-\fill (P) circle (2.8pt);
-\node[above right] at (P) {粒子};
-
-% 座標系に固定された時計
-\begin{scope}[shift={(5.4,2.2)}]
-  \draw[thick] (0,0) circle (0.48);
-
-  \foreach \angle in {0,30,...,330}{
-    \draw (\angle:0.40) -- (\angle:0.46);
-  }
-
-  \draw[thick] (0,0) -- (90:0.33);
-  \draw[thick] (0,0) -- (20:0.24);
-  \fill (0,0) circle (1.3pt);
-
-  \node[above] at (0,0.65) {時刻 $t$};
-  \node[below,align=center] at (0,-0.65)
-    {座標系に固定\\された時計};
-\end{scope}
-
-\end{tikzpicture}
-\caption{基準系を構成する空間座標系と、
-この系に固定された時計。空間は2次元で模式的に示した。}
-\label{fig:reference-frame}
-\end{figure}
-
-\subsection{古典的時空(仮定)}
+\FloatBarrier
+\subsection{非相対論的時空(仮定)}
 \label{sec:Spacetime}
-古典力学では、すべての基準系に共通する絶対時間が存在すると仮定する。したがって、
+非相対論的力学では、すべての基準系に共通する絶対時間が存在すると仮定する。したがって、
 二つの事象の時間間隔は基準系によらない。また、同時刻における空間は3次元ユーク
 リッド空間であり、同時刻に起きた二事象の空間距離は基準系によらないと仮定する。
 \\数式で表すと、ある事象を基準系 $K$ では $(t,\bm{x})$ で表し、 $K^\prime$ では $(t^\prime , \bm{x}^\prime)$ とすると、
@@ -114,148 +103,244 @@ Lagrangianの決定で重要になる。
 \[
 |\varDelta\bm{x}|=|\varDelta\bm{x}^\prime|
 \]
-が成り立つということである。(図\ref{fig:newtonian-spacetime})
+が成り立つということである。(図\ref{fig:distance},\ref{fig:time})
+\\この仮定はGalilei変換を導出するのに用いる。(\ref{sec:Hosoku})
 
-\begin{figure}[ht]
-\centering
-\begin{tikzpicture}[
-  >=Stealth,
-  event/.style={circle,fill=black,inner sep=2pt}
-]
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[scale=0.85]
 
-%==================================
-% 上段：時間間隔の不変性
-%==================================
-\node[font=\bfseries] at (5,1.2)
-  {時間間隔の不変性};
+    % ---------- K系 ----------
+    \begin{scope}
+      \node at (1.0,3.65) {$K$};
 
-% 基準系 K
-\begin{scope}
-  \node at (2,0.65) {基準系 $K$};
+      % 等時刻面
+      \path[time slice]
+        (-0.85,1.95) -- (2.65,1.95)
+        -- (3.15,2.65) -- (-0.35,2.65)
+        -- cycle;
+      \node[right] at (3.15,2.30) {$t$};
 
-  \draw[->] (0,0) -- (4.3,0) node[right] {$t$};
+      % 座標軸
+      \draw[spacetime axis]
+        (0,0) -- (-1.35,-1.25)
+        node[below left] {$x$};
+      \draw[spacetime axis]
+        (0,0) -- (3.05,0)
+        node[right] {$y$};
+      \draw[spacetime axis]
+        (0,0) -- (0,3.20)
+        node[above] {$t$};
 
-  \node[event] at (0.7,0) {};
-  \node[event] at (3.0,0) {};
+      % 世界線
+      \draw[spacetime path]
+        (0.30,-0.60)
+        .. controls (0.60,0.05) and (0.00,1.10) ..
+        (0.65,2.30);
 
-  \node[above] at (0.7,0.08) {$A$};
-  \node[above] at (3.0,0.08) {$B$};
+      \draw[spacetime path]
+        (1.85,-0.60) -- (1.85,2.30);
 
-  \node[below] at (0.7,0) {$t_A$};
-  \node[below] at (3.0,0) {$t_B$};
+      % 同時刻の二点
+      \node[event] (C) at (0.65,2.30) {};
+      \node[event] (D) at (1.85,2.30) {};
 
-  \draw[densely dashed,gray] (0.7,-0.35) -- (0.7,-0.85);
-  \draw[densely dashed,gray] (3.0,-0.35) -- (3.0,-0.85);
+      \node[left=5pt] at (C) {$C$};
+      \node[right=5pt] at (D) {$D$};
 
-  \draw[<->,thick,blue!70!black]
-    (0.7,-0.7) -- (3.0,-0.7)
-    node[midway,below] {$\Delta t$};
-\end{scope}
+      \node[above] at (0.65,2.73) {$\bm{x}_C(t)$};
+      \node[above] at (2.05,2.73) {$\bm{x}_D(t)$};
 
-% 基準系 K'
-\begin{scope}[xshift=5.7cm]
-  \node at (2,0.65) {基準系 $K'$};
+      % 距離
+      \node at (1.0,-1.95)
+        {$|\Delta \bm{x}|=|\bm{x}_D(t)-\bm{x}_C(t)|$};
+    \end{scope}
 
-  \draw[->] (0,0) -- (4.3,0) node[right] {$t'$};
+    % ---------- K'系 ----------
+    \begin{scope}[shift={(7.2,0)}]
+      \node at (1.0,3.65) {$K'$};
 
-  \node[event] at (1.1,0) {};
-  \node[event] at (3.4,0) {};
+      % 等時刻面
+      \path[time slice]
+        (-0.85,1.95) -- (2.65,1.95)
+        -- (3.15,2.65) -- (-0.35,2.65)
+        -- cycle;
+      \node[right] at (3.15,2.30) {$t'$};
 
-  \node[above] at (1.1,0.08) {$A$};
-  \node[above] at (3.4,0.08) {$B$};
+      % 座標軸
+      \draw[spacetime axis]
+        (0,0) -- (-1.35,-1.25)
+        node[below left] {$x'$};
+      \draw[spacetime axis]
+        (0,0) -- (3.05,0)
+        node[right] {$y'$};
+      \draw[spacetime axis]
+        (0,0) -- (0,3.20)
+        node[above] {$t'$};
 
-  \node[below] at (1.1,0) {$t'_A$};
-  \node[below] at (3.4,0) {$t'_B$};
+      % 世界線
+      \draw[spacetime path]
+        (0.15,-0.60)
+        .. controls (0.55,0.15) and (0.75,1.45) ..
+        (1.30,2.30);
 
-  \draw[densely dashed,gray] (1.1,-0.35) -- (1.1,-0.85);
-  \draw[densely dashed,gray] (3.4,-0.35) -- (3.4,-0.85);
+      \draw[spacetime path]
+        (1.35,-0.60) -- (2.50,2.30);
 
-  \draw[<->,thick,blue!70!black]
-    (1.1,-0.7) -- (3.4,-0.7)
-    node[midway,below] {$\Delta t'$};
-\end{scope}
+      % 同時刻の二点
+      \node[event] (Cp) at (1.30,2.30) {};
+      \node[event] (Dp) at (2.50,2.30) {};
 
-\node at (5,-1.55)
-  {$\Delta t=t_B-t_A=t'_B-t'_A=\Delta t'$};
+      \node[left=5pt] at (Cp) {$C'$};
+      \node[right=3pt] at (Dp) {$D'$};
 
-%==================================
-% 下段：同時刻の空間距離の不変性
-%==================================
-\node[font=\bfseries] at (5,-2.5)
-  {同時刻の空間距離の不変性};
+      \node[above] at (1.15,2.73) {$\bm{x}'_C(t')$};
+      \node[above] at (2.65,2.73) {$\bm{x}'_D(t')$};
 
-% 基準系 K
-\begin{scope}[yshift=-6.1cm]
-  \node at (2,2.9)
-    {基準系 $K$：$t_C=t_D$};
+      % 距離
+      \node at (1.0,-1.95)
+        {$|\Delta \bm{x}'|=|\bm{x}'_D(t')-\bm{x}'_C(t')|$};
+    \end{scope}
 
-  \draw[->] (0,0) -- (4.3,0) node[right] {$x$};
-  \draw[->] (0,0) -- (0,2.5) node[above] {$y$};
-  \node[below left] at (0,0) {$O$};
+    % 共通の結論
+    \node at (4.6,-2.85)
+      {同時刻において
+        $|\Delta \bm{x}|=|\Delta \bm{x}'|$};
 
-  \coordinate (C) at (0.8,0.7);
-  \coordinate (D) at (3.1,1.8);
-
-  % 二事象を結ぶ変位ベクトル
-  \draw[->,thick,blue!70!black] (C) -- (D)
-    node[midway,above,sloped] {$\Delta\bm{x}$};
-
-  \node[event] at (C) {};
-  \node[event] at (D) {};
-
-  \node[below] at (C) {$C:\ \bm{x}_C$};
-  \node[above] at (D) {$D:\ \bm{x}_D$};
-\end{scope}
-
-% 基準系 K'
-\begin{scope}[xshift=5.7cm,yshift=-6.1cm]
-  \node at (2,2.9)
-    {基準系 $K'$：$t'_C=t'_D$};
-
-  \draw[->] (0,0) -- (4.3,0) node[right] {$x'$};
-  \draw[->] (0,0) -- (0,2.5) node[above] {$y'$};
-  \node[below left] at (0,0) {$O'$};
-
-  % 同じ長さの変位を、異なる成分で表示
-  \coordinate (Cp) at (0.7,1.9);
-  \coordinate (Dp) at (3.0,0.8);
-
-  \draw[->,thick,blue!70!black] (Cp) -- (Dp)
-    node[midway,above,sloped] {$\Delta\bm{x}'$};
-
-  \node[event] at (Cp) {};
-  \node[event] at (Dp) {};
-
-  \node[above] at (Cp) {$C:\ \bm{x}'_C$};
-  \node[below] at (Dp) {$D:\ \bm{x}'_D$};
-\end{scope}
-
-\node at (5,-6.9)
-  {$|\Delta\bm{x}|=|\Delta\bm{x}'|
-    \qquad (\Delta t=\Delta t'=0)$};
-
-\end{tikzpicture}
-\caption{古典力学における時間間隔と同時刻の空間距離の不変性。
-左右は同じ事象を異なる基準系で記述したものである。
-空間は2次元で模式的に示した。}
-\label{fig:newtonian-spacetime}
+  \end{tikzpicture}
+  \caption{非相対論的時空：同時刻の二点間距離の不変性}
+  \label{fig:distance}
 \end{figure}
 
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[scale=0.85]
+
+    % ---------- K系 ----------
+    \begin{scope}
+      \node at (1.0,3.80) {$K$};
+
+      % 下の等時刻面
+      \path[time slice]
+        (-0.85,0.15) -- (2.65,0.15)
+        -- (3.15,0.85) -- (-0.35,0.85)
+        -- cycle;
+      \node[right] at (3.15,0.50) {$t=t_A$};
+
+      % 上の等時刻面
+      \path[time slice]
+        (-0.85,2.15) -- (2.65,2.15)
+        -- (3.15,2.85) -- (-0.35,2.85)
+        -- cycle;
+      \node[right] at (3.15,2.50) {$t=t_B$};
+
+      % 座標軸
+      \draw[spacetime axis]
+        (0,0) -- (-1.35,-1.25)
+        node[below left] {$x$};
+      \draw[spacetime axis]
+        (0,0) -- (3.05,0)
+        node[right] {$y$};
+      \draw[spacetime axis]
+        (0,0) -- (0,3.35)
+        node[above] {$t$};
+      \node[below right] at (0,0) {$O$};
+
+      % AからBへの世界線
+      \draw[spacetime path]
+        (0.45,0.50)
+        .. controls (1.00,1.05) and (1.05,1.80) ..
+        (1.15,2.50);
+
+      \node[event] (A) at (0.45,0.50) {};
+      \node[event] (B) at (1.15,2.50) {};
+
+      \node[right=5pt] at (A) {$A$};
+      \node[right=5pt] at (B) {$B$};
+
+      % 時間間隔
+      \node at (1.0,-1.95)
+        {$\Delta t=t_B-t_A$};
+    \end{scope}
+
+    % ---------- K'系 ----------
+    \begin{scope}[shift={(7.2,0)}]
+      \node at (1.0,3.80) {$K'$};
+
+      % 下の等時刻面
+      \path[time slice]
+        (-0.85,0.15) -- (2.65,0.15)
+        -- (3.15,0.85) -- (-0.35,0.85)
+        -- cycle;
+      \node[right] at (3.15,0.50) {$t'=t'_A$};
+
+      % 上の等時刻面
+      \path[time slice]
+        (-0.85,2.15) -- (2.65,2.15)
+        -- (3.15,2.85) -- (-0.35,2.85)
+        -- cycle;
+      \node[right] at (3.15,2.50) {$t'=t'_B$};
+
+      % 座標軸
+      \draw[spacetime axis]
+        (0,0) -- (-1.35,-1.25)
+        node[below left] {$x'$};
+      \draw[spacetime axis]
+        (0,0) -- (3.05,0)
+        node[right] {$y'$};
+      \draw[spacetime axis]
+        (0,0) -- (0,3.35)
+        node[above] {$t'$};
+      \node[below right] at (0,0) {$O'$};
+
+      % AからBへの世界線
+      \draw[spacetime path]
+        (0.65,0.50)
+        .. controls (1.60,1.05) and (2.00,1.80) ..
+        (2.10,2.50);
+
+      \node[event] (Ap) at (0.65,0.50) {};
+      \node[event] (Bp) at (2.10,2.50) {};
+
+      \node[right=5pt] at (Ap) {$A$};
+      \node[right=5pt] at (Bp) {$B$};
+
+      % 時間間隔
+      \node at (1.0,-1.95)
+        {$\Delta t'=t'_B-t'_A$};
+    \end{scope}
+
+    % 共通の結論
+    \node at (4.6,-2.85)
+      {$\Delta t=\Delta t'$};
+
+  \end{tikzpicture}
+  \caption{非相対論的時空：時間間隔の不変性}
+  \label{fig:time}
+\end{figure}
+
+\FloatBarrier
 \subsection{運動の決定性(経験則)}
 \label{sec:Motion}
 3次元空間において拘束のない $N$ 個の粒子系の力学的自由度は $3N$ である。粒子の位置を記述
-するために一般化座標 $\bm{q}(t)=\bigl(q_1(t),q_2(t),\ldots,q_{3N}(t)\bigr)$
-を定義し、一般化速度をその導関数として $\dot{\bm{q}}(t)=\bigl(\dot{q}_1(t),\dot{q}_2(t),\ldots,\dot{q}_{3N}(t)\bigr)$
+するために$3N$次元配位空間上で一般化座標 
+\[
+\bm{q}(t)=\bigl(q_1(t),q_2(t),\ldots,q_{3N}(t)\bigr)
+\]
+を定義し、一般化速度をその導関数として 
+\[
+\dot{\bm{q}}(t)=\bigl(\dot{q}_1(t),\dot{q}_2(t),\ldots,\dot{q}_{3N}(t)\bigr)
+\]
 と定義する。
 
-古典粒子力学では、ある時刻に \(q,\dot q\) を指定すると、
+古典粒子力学では、ある時刻に \(\bm{q},\dot{\qv}\) を指定すると、
 その直後の時間発展が一意に定まることを経験則として仮定する。
-このことはすなわち、粒子の加速度が位置と速度の関数で一意的に表せることを意味する。
+このことはすなわち、粒子の(一般化)加速度が位置と速度の関数で一意的に表せることを意味する。
 \begin{equation}
 \ddot{\bm{q}}(t)=\bm{f}\bigl(\bm{q}(t),\dot{\bm{q}}(t),t\bigr)
 \label{eq:accelaration}
 \end{equation}
-なぜならば、ある時刻 $t$ での加速度が定まれば、そこから微小時間 $dt$
+これにより、ある時刻での全粒子の位置と速度が与えられれば、その時刻 $t$ での全粒子の(一般化)加速度が(\refeq{eq:accelaration})により定まり、そこから微小時間 $dt$
 だけ経過した時刻での位置と速度は
 \begin{align*}
 \dot{\qv}(t+dt)&\simeq\dot{\qv}(t)+\ddot{\qv}(t)dt\\
@@ -272,115 +357,171 @@ Lagrangianの決定で重要になる。
 粒子の運動は停留作用の原理から与えられ、おのおのの系はLagrangianと呼ばれる関数 $\La$ で記述される。
 \ref{sec:Motion} 節より、運動方程式は 2 階の微分方程式である。そのため、古典力学の運動方程式を高々2階に保つためLagrangian $\La$ は
 $\qv(t)$ , $\dot{\qv}(t)$ , $t$ の関数であると仮定する。
-\\作用 $S$ は粒子の軌道 $\qv(t)$ を引数とする汎関数として次のように記述される。
+\\作用 $S$ は粒子の軌道 $\qv(\cdot)$ を引数とする汎関数として次のように記述される。
 \[
-S[\qv(t)]:=\int_{t_i}^{t_f}dt\Laq
+S[\qv(\cdot)]:=\int_{t_i}^{t_f}dt\Laq
 \]
-作用は粒子の軌道 $\qv(t)$ を一つ定めると値が決まるという関係にある。(図\ref{fig:Mapping})
+作用は粒子の軌道 $\qv(\cdot)$ を一つ定めると値が決まるという関係にある。(図\ref{fig:Mapping})
 \[
-\qv(t) \longmapsto S[\qv(t)]
+\qv(\cdot) \longmapsto S[\qv(\cdot)]
 \]
+ここで、作用の引数が$\bm{q}(\cdot)$となっているのは、$\bm{q}(\cdot)$は関数形であり、これと実数である$q_i(t)$とを区別するためである。
 
-\begin{figure}[ht]
-\centering
-\begin{tikzpicture}[>=Stealth]
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[scale=0.9]
 
-% 座標軸
-\draw[->] (0,0) -- (5.7,0) node[right] {$t$};
-\draw[->] (0,0) -- (0,3.3) node[above] {$q$};
-\node[below left] at (0,0) {$O$};
+    % ---------- 等時刻面 ----------
+    % t = t_i
+    \path[time slice]
+      (-1.00,0.00) -- (2.75,0.00)
+      -- (3.30,0.70) -- (-0.45,0.70)
+      -- cycle;
+    \node[right] at (3.30,0.55) {$t=t_i$};
 
-% 元の経路 q(t)
-\draw[very thick]
-  (1.1,1.2)
-  .. controls (1.8,2.5) and (3.0,2.7) ..
-  (3.8,2.15)
-  .. controls (4.3,1.85) and (4.8,1.9) ..
-  (5.1,2.1);
+    % t = t_f
+    \path[time slice]
+      (-1.00,2.65) -- (2.75,2.65)
+      -- (3.30,3.35) -- (-0.45,3.35)
+      -- cycle;
+    \node[right] at (3.30,3.20) {$t=t_f$};
 
-\node[above] at (2.6,2.55) {$q(t)$};
+    % ---------- 座標軸 ----------
+    \draw[spacetime axis]
+      (0,0) -- (-1.50,-1.40)
+      node[below left] {$q_1$};
 
-% 変分した経路 q(t)+εg(t)
-\draw[thick]
-  (1.1,1.2)
-  .. controls (1.8,2.1) and (3.0,2.25) ..
-  (3.8,1.82)
-  .. controls (4.3,1.6) and (4.8,1.75) ..
-  (5.1,2.1);
+    \draw[spacetime axis]
+      (0,0) -- (3.65,0)
+      node[right] {$q_2,\ldots,q_n$};
 
-\node[below] at (2.9,1.75)
-  {$q(t)+\varepsilon g(t)$};
+    \draw[spacetime axis]
+      (0,0) -- (0,3.90)
+      node[above] {$t$};
 
-% 変分を表す矢印
-\draw[->] (2.0,2.15) -- (2.0,1.88);
-\draw[->] (2.7,2.45) -- (2.7,2.10);
-\draw[->] (3.4,2.35) -- (3.4,1.98);
-\draw[->] (4.1,2.00) -- (4.1,1.72);
+    % ---------- 共通の端点 ----------
+    \coordinate (I) at (1.00,0.35);
+    \coordinate (F) at (1.15,3.00);
 
-% 端点
-\fill (1.1,1.2) circle (1.5pt);
-\fill (5.1,2.1) circle (1.5pt);
+        % ---------- その他の候補経路 ----------
+    % すべて同じ端点 I, F を通る
 
-\draw[dashed] (1.1,0) -- (1.1,1.2);
-\draw[dashed] (5.1,0) -- (5.1,2.1);
+    % 左側へ膨らむ経路
+    \draw[thin,black!40]
+      (I)
+      .. controls (0.10,1.10) and (0.15,2.25) ..
+      (F);
 
-\node[below] at (1.1,0) {$t_i$};
-\node[below] at (5.1,0) {$t_f$};
+    \draw[thin,black!40]
+      (I)
+      .. controls (0.55,1.10) and (0.50,2.25) ..
+      (F);
 
-% 作用値が属する実数軸
-\draw[->] (7.5,0.7) -- (7.5,3.4)
-  node[above] {$\mathbb{R}$};
+    % 右側へ膨らむ経路
+    \draw[thin,black!40]
+      (I)
+      .. controls (2.35,1.10) and (2.40,2.25) ..
+      (F);
 
-% q(t) から S[q] への写像
-\draw[->,thick]
-  (3.3,2.45)
-  to[out=35,in=160]
-  node[pos=0.48,above] {$S$}
-  (7.5,2.55);
+    \draw[thin,black!40]
+      (I)
+      .. controls (2.95,1.10) and (2.85,2.25) ..
+      (F);
+    % 元の経路 q
+    \draw[spacetime path]
+      (I)
+      .. controls (0.95,1.15) and (1.00,2.20) ..
+      (F);
 
-% 変分した経路から作用値への写像
-\draw[->,thick]
-  (4.1,1.72)
-  to[out=-5,in=200]
-  (7.5,1.85);
+    % 変分した経路 q + epsilon g
+    \draw[thick,densely dashed]
+      (I)
+      .. controls (1.85,1.15) and (1.90,2.20) ..
+      (F);
 
-% 作用値
-\fill (7.5,2.55) circle (2pt);
-\fill (7.5,1.85) circle (2pt);
+    % 変分を示す横向きの矢印
+    \foreach \xa/\xb/\h in {
+      0.99/1.48/1.00,
+      1.01/1.68/1.65,
+      1.06/1.59/2.30
+    }{
+      \draw[thin,-{Stealth[length=1.7mm]}]
+        (\xa,\h) -- (\xb,\h);
+    }
 
-\node[right] at (7.5,2.55) {$S[q]$};
-\node[right] at (7.5,1.85)
-  {$S[q+\varepsilon g]$};
+    % 経路のラベル
+    \node[left] at (0.92,1.65) {$q$};
+    \node[right] at (1.80,1.35) {$q+\varepsilon g$};
 
-\end{tikzpicture}
+    % 端点
+    \node[event] at (I) {};
+    \node[event] at (F) {};
 
-\caption{端点を固定した経路の変分と作用の変化}
-\label{fig:Mapping}
+    % ---------- 作用の値を表す実数軸 ----------
+    \draw[spacetime axis]
+      (8.30,0.00) -- (8.30,4.00)
+      node[above] {$\mathbb{R}$};
+
+    \coordinate (Sq) at (8.30,2.95);
+    \coordinate (Sqvar) at (8.30,0.65);
+
+    \node[event] at (Sq) {};
+    \node[event] at (Sqvar) {};
+
+    \node[right=6pt] at (Sq) {$S[q]$};
+    \node[right=6pt] at (Sqvar) {$S[q+\varepsilon g]$};
+
+    % ---------- 経路から作用の値への対応 ----------
+    % q -> S[q]
+    \draw[
+      semithick,
+      -{Stealth[length=2.5mm]},
+      shorten >=3pt
+    ]
+      (1.10,2.60)
+      .. controls (0.30,4.95) and (4.70,4.60) ..
+      (Sq);
+
+    % q + epsilon g -> S[q + epsilon g]
+    \draw[
+      semithick,
+      -{Stealth[length=2.5mm]},
+      shorten >=3pt
+    ]
+      (1.71,1.85)
+      .. controls (3.70,2.75) and (6.00,1.20) ..
+      (Sqvar);
+
+  \end{tikzpicture}
+  \caption{端点を固定した経路の変分と作用汎関数}
+  \label{fig:Mapping}
 \end{figure}
 
 
+
 \subsection{Euler-Lagrange方程式}
+\label{sec:Henbun}
 停留作用の原理とは、まず境界条件として、時刻 $t_i$ と $t_f$ での粒子の位置を固定させ
 る。この条件の下で時刻 $t_i$ から $t_f$ までのあらゆる軌道のうち、作用が停留するよう
 な軌道を自然は選ぶということである。
-具体的にはまず、ある軌道 $\qv(t)$ があり、以下の境界条件を満たす滑らかな任意の関数 $\bm{g}(t)$ と任意に微小な量 $\epsilon$ を用いて軌道を $\epsilon \bm{g}(t)$ だけ変化させる。
+具体的にはまず、ある軌道 $\qv(\cdot)$ があり、以下の境界条件を満たす滑らかな任意の関数 $\bm{g}(\cdot)$ と任意に微小な量 $\epsilon$ を用いて軌道を $\epsilon \bm{g}(\cdot)$ だけ変化させる。
 \[
-\qv(t) \rightarrow \qv(t)+\epsilon \bm{g}(t)
+\qv(\cdot) \rightarrow \qv(\cdot)+\epsilon \bm{g}(\cdot)
 \]
-ただし、$\bm{g}(t)$ の境界条件は
+ただし、$\bm{g}(\cdot)$ の境界条件は
 \begin{equation}
 \bm{g}(t_i)=0=\bm{g}(t_f)
 \label{eq:boundry}
 \end{equation}
 この時、速度は
 \[
-\dot{\qv}(t) \rightarrow \dot{\qv}(t)+\epsilon\dot{\bm{g}}(t)
+\dot{\qv}(\cdot) \rightarrow \dot{\qv}(\cdot)+\epsilon\dot{\bm{g}}(\cdot)
 \]
 である。
 %図
 作用の変化はこの時、
 \begin{align*}
-\delta S[\qv(t)]&:=S[\qv(t)+\epsilon\bm{g}(t)]-S[\qv(t)]
+\delta S[\qv(\cdot)]&:=S[\qv(\cdot)+\epsilon\bm{g}(\cdot)]-S[\qv(\cdot)]
 \\&=\intS\La\bigl(\qv(t)+\epsilon\bm{g}(t),\dot{\qv}(t)+\epsilon\dot{\bm{g}}(t),t\bigr)-\intS\Laq
 \\&=\epsilon\intS\Bigl[\pdv{\Laq}{\qv(t)}\cdot\bm{g}(t)+\pdv{\Laq}{\dot{\qv}(t)}\cdot\dot{\bm{g}}(t)\Bigr]+\mathcal{O}(\epsilon^2)
 \\&=-\epsilon\intS\bm{g}(t)\cdot\Bigl[\ELeq\Bigr]+\mathcal{O}(\epsilon^2)
@@ -403,6 +544,12 @@ S[\qv(t)]:=\int_{t_i}^{t_f}dt\Laq
 
 \subsection{Lagrangianの正則性}
 \label{sec:Seisoku}
+Lagrangianに以下の正則条件
+\[
+\det(\pdv{\La}{\dot{q}_i}{\dot{q}_j})\ne0
+\]
+を課す。以下にその理由を述べる。
+
 Euler-Lagrange方程式(\refeq{eq:ELeq})を展開すると、
 \[
 \sum_{j}\left[\pdv{\La}{\dot{q}_i}{\dot{q}_j}\ddot{q}_j + \pdv{\La}{\dot{q}_i}{q_j}\dot{q}_j\right]+\pdv{\La}{\dot{q}_i}{t}-\pdv{\La}{q_i}=0
@@ -436,7 +583,16 @@ Euler-Lagrange方程式(\refeq{eq:ELeq})は一般の正則な座標変換
 \[
 q_i=q_i(\bm{Q},t)
 \]
-に対して形を変えない、共変性を持つ。以下にその証明を載せる。
+に対して形を変えない共変性を持つ。すなわち、$\bm{q}$で表した座標系でELeqは
+\[
+\frac{d}{dt}\pdv{\La}{\dot{\qv}}-\pdv{\La}{\qv}=0
+\]
+となり、$\bm{Q}$で表した座標系でもELeq.は同じ形
+\[
+\frac{d}{dt}\pdv{\tilde{\La}}{\dot{\bm{Q}}}-\pdv{\tilde{\La}}{\bm{Q}}=0
+\]
+と表せる。このことは、ELeqはどの座標系でも同じ手続きで立てることができることを意味する。その意味で、Lagrange形式は座標系に依存しない理論である。
+以下にその証明を載せる。
 \\\textbf{証明}
 
 まず、
@@ -471,36 +627,41 @@ q_i=q_i(\bm{Q},t)
 \frac{d}{dt}\pdv{\tilde{\La}}{\dot{Q}_a}-\pdv{\tilde{\La}}{Q_a}=\sum_{i}\pdv{q_i}{Q_a}\left(\frac{d}{dt}\pdv{\La}{\dot{q}_i}-\pdv{\La}{q_i}\right)=0
 \]
 となる。右辺では、Euler-Lagrange方程式(\refeq{eq:ELeq})を用いた。また、この時正則より、$\pdv{q_i}{Q_a}$の逆行列を
-掛けると逆を示すこともできる。
+掛けると逆を示すこともできる。$\square$
 
-したがってEuler–Lagrange方程式の形式は一般化座標の選び方によらない。
-この性質は、後に扱う時空対称変換とは異なり、同じ物理系を異なる座標で記述できるという座標共変性である。$\square$
-
-\subsection{Lagrangianの不定性}
+\subsection{Lagrangianの対称性の定義及びLagrangianの不定性}
 \label{sec:invariance}
-Lagrangianに位置と時間の任意の関数 $G(\qv(t),t)$ の時間全微分 $\frac{d}{dt}G(\qv(t),t)$
-を加えてもEuler-Lagrange方程式(\refeq{eq:ELeq})は等価である。以下にそれを示す。
+まず、Lagrangianの対称性を定義する。
+\\変換$Q_i=Q_i(\bm{q},t)$のもとでLagrangianの変化分が高々位置と時間の関数の時間全微分 $\frac{d}{dt}G(\qv(t),t)$である時、Lagrangianはこの変換に対する対称性を持つと定義する。
 \[
-\tilde{\La}(\qv(t),\dot{\qv}(t),t):=\Laq+\dv{G(\qv(t),t)}{t}
+\La(\bm{Q}(t),\dot{\bm{Q}}(t),t)=\La(\qv(t),\dot{\qv}(t),t)+\frac{d}{dt}G(\qv(t),t)
+\]
+
+以下に、Lagrangianに位置と時間の任意の関数 $G(\qv(t),t)$ の時間全微分 $\frac{d}{dt}G(\qv(t),t)$
+を加えてもEuler-Lagrange方程式(\refeq{eq:ELeq})は等価であることを示す。
+\[
+\La(\bm{Q}(t),\dot{\bm{Q}}(t),t):=\tilde{\La}(\qv(t),\dot{\qv}(t),t)=\Laq+\dv{G(\qv(t),t)}{t}
 \]
 とする。この時、作用$S$は
 \begin{align*}
-\tilde{S}[\qv(t)] &:= \intS\tilde{\La}(\qv(t),\dot{\qv}(t),t)=\intS\Laq+\intS\dv{G(\qv(t),t)}{t}
-\\ &= S[\qv(t)]+G(\qv(t_f),t_f)-G(\qv(t_i),t_i)
+\tilde{S}[\qv(\cdot)] &:= \intS\tilde{\La}(\qv(t),\dot{\qv}(t),t)=\intS\Laq+\intS\dv{G(\qv(t),t)}{t}
+\\ &= S[\qv(\cdot)]+G(\qv(t_f),t_f)-G(\qv(t_i),t_i)
 \end{align*}
 となる。
 \[
-\qv(t) \rightarrow \qv(t)+\epsilon \bm{g}(t)
+\qv(\cdot) \rightarrow \qv(\cdot)+\epsilon \bm{g}(\cdot)
 \]
 と変化させたとき、上の式及び、$\delta G(\qv(t_f),t_f)=0=\delta G(\qv(t_i),t_i)$ より、
 \[
-\delta\tilde{S}[\qv(t)]=\delta S[\qv(t)]
+\delta\tilde{S}[\qv(\cdot)]=\delta S[\qv(\cdot)]
 \]
 となることが分かる。よって停留条件から、
 \[
 \pdv{\tilde{\La}(\qv(t),\dot{\qv}(t),t)}{\qv(t)}-\frac{d}{dt}\pdv{\tilde{\La}(\qv(t),\dot{\qv}(t),t)}{\dot{\qv}(t)}=\pdv{\La(\qv(t),\dot{\qv}(t),t)}{\qv(t)}-\frac{d}{dt}\pdv{\La(\qv(t),\dot{\qv}(t),t)}{\dot{\qv}(t)}=0
 \]
-となり、Euler-Lagrange方程式は等価であることが確認できた。また、Lagrangianは定数倍だけの不定性がある。すなわち、
+となり、Euler-Lagrange方程式は等価であることが確認できた。
+
+他にも$\frac{d}{dt}G$以外のLagrangianの不定性がある。例えば、Lagrangianは定数倍だけの不定性がある。すなわち、
 \[
 \tilde{\La}(\qv(t),\dot{\qv}(t),t)=C\Laq \quad (C\ne 0)
 \]
@@ -510,25 +671,24 @@ Lagrangianに位置と時間の任意の関数 $G(\qv(t),t)$ の時間全微分 
 
 \section{慣性基準系と自由粒子}
 
-\subsection{慣性基準系の定義とその存在}
+\subsection{慣性基準系の定義とその存在の仮定}
 \label{sec:inertial}
 自由粒子の力学法則が、時間並進、空間並進および空間回転に対して不変
-となる基準系を慣性基準系と呼ぶ。したがって、自由粒子の力学法則が時間並進、空間並進および空間回転
+となる基準系を慣性基準系と定義する。
+\\この定義より、自由粒子の力学法則が時間並進、空間並進および空間回転
 の少なくとも一つに対して不変でなければ基準系を非慣性系と呼ぶ。
 
 この定義を満たす基準系が実際の自然界に存在するかは別問題である。
 以下では、そのような基準系が存在することを経験則として仮定する。(慣性系の存在の仮定)
-\\また、自由粒子に限らず、慣性系で記述する孤立系の力学法則は時間並進、空間並進および空間回転に対して不変
-であることが経験的に知られている。ここで孤立系とは、自分自身の系以外と全く相互作用しない系である。
 
 注意として、外場によって自由粒子でなくなった系の対称性が破れていることは、
 基準系が非慣性系であることを意味しない。慣性系の定義では自由粒子を考える。
 
-\subsection{慣性の法則とその導出}
-\ref{sec:invariance}節で求めたEuler-Lagrange方程式の等価条件を元に、以下の節で課す対称性によって
-許される自由粒子のLagrangianの形を求める。自由粒子について、空間並進・時間並進・空間回転のすべてに
-対して不変なラグランジアンの代表を選べると仮定する。
-計算を単純にするため、以下ではデカルト座標系を用い、
+\subsection{慣性の法則の導出}
+\ref{sec:invariance}節で定義したLagrangianの対称性の条件を元に、以下の節で課す変換によって
+許される自由粒子のLagrangianの形を求める。
+\\以下では自由粒子について、空間並進・時間並進・空間回転のすべてに対して不変なラグランジアンの代表を選べると仮定する。
+また、計算を単純にするため、以下ではデカルト座標系を用い、
 粒子の位置を $\bm{x}(t)=\bigl(x(t),y(t),z(t)\bigr)$ として記述する。
 
 \subsubsection{空間並進対称性}
@@ -637,11 +797,11 @@ $\bm{x}_i(t)\rightarrow \bm{x}_i(t)+\bm a$}
 \[
 \bm{x}(t)\rightarrow \bm{x}(t)+\bm{a} \quad それ以外変更しない
 \]
-\ref{sec:inertial}節で述べたように、慣性基準系において、自由粒子を記述する方程式は空間並進対称性を持つ。
+\ref{sec:inertial}節で述べたように、慣性基準系において、自由粒子を記述する方程式は空間並進対称性を持つと定義した。
 以下では空間並進対称性を持つための自由粒子のLagrangianの形を求める。
 
 自由粒子の代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは空間並進に対して変化しないものを代表
-にとれると仮定する。この時、明らかにLagrangianは $\bm{x}(t)$ に依らないものと分かる。一応、証明は以下の通りである。
+にする。この時、明らかにLagrangianは $\bm{x}(t)$ に依らないものと分かる。一応、証明は以下の通りである。
 \\$\textbf{証明}$
 
 任意の空間並進 $\bm{a}$ を用いて微小な空間並進変換を
@@ -778,8 +938,8 @@ Lagrangianの代表としてLagrangianが変化しない時、すなわち $\fra
 t\rightarrow t+t_0 \quad の時、 \quad \bm{x}(t)\quad \dot{\bm{x}}(t) \quad は変化させない。 
 \]
 となる。
-\\\ref{sec:inertial}節より、慣性基準系において自由粒子の法則は時間並進対称性を持つ。
-自由粒子の代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは時間並進に対して変化しないものをとれると仮定する。
+\\\ref{sec:inertial}節より、慣性基準系において自由粒子の法則は時間並進対称性を持つと定義した。
+自由粒子の代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。
 この時、明らかにLagrangianは $t$ に陽に依らないとわかる。一応、証明は以下の通りである。
 \\\textbf{証明}
 
@@ -904,7 +1064,7 @@ t\rightarrow t+\epsilon t_0
 \]
 SO(3)とは特殊直交群と呼ばれる行列の集合であり、$R^TR=RR^T=I\quad かつ\quad \det(R)=1$ を満たすものである。
 
-慣性基準系において、自由粒子の法則は空間回転対称性を持つ。代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。すなわち、Lagrangianは空間回転に対して変化しないものをとれると仮定する。
+慣性基準系において、自由粒子の法則は空間回転対称性を持つと定義した。代表のLagrangianとして、今、 $\frac{d}{dt}G(\bm{x}(t),t)=0$ となる場合を考える。
 空間回転に対して不変な量はスカラー量である必要がある。
 よって、代表のLagrangianは $\dot{\bm{x}}(t)$ の内積$\dot{\bm{x}}^2$で表された関数しか許されず、一般に
 \[
@@ -926,16 +1086,6 @@ SO(3)とは特殊直交群と呼ばれる行列の集合であり、$R^TR=RR^T=I
 \La(\dot{\bm{x}}'^2)=\La(\dot{\bm{x}}^2)
 \]
 $\square$
-
-以上の議論は $G=0$ である場合の厳密に不変な代表Lagrangianを求めたが、一般に $G\ne0$ とすると
-Lagrangianの形はこの限りでない。例えば、時間並進、空間回転に対してLagrangianは不変だが、
-空間並進に対して Lagrangianの変化が $G(\bm{x},t)$ の時間全微分で書けるものの一つとして、
-\[
-\bm{x}\cdot\dot{\bm{x}}
-\]
-の1次までの関数形があげられる。この時、
-$$\bm{x}\cdot\dot{\bm{x}}=\frac{1}{2}\frac{d}{dt}(\bm{x})^2$$
-となり、この項自身が時間の全微分である。よって、Lagrangianの不定性から、初めから除外しても良い。
 
 以上より、自由粒子の代表のLagrangianは
 \[
@@ -1059,11 +1209,11 @@ $t>0$における配置を示した。}
 
 
 \subsection{Galileiの相対性原理(経験則)と自由粒子のLagrangianの導出}
-あらゆる慣性基準系において、力学の法則は同じである。いいかえると、力学を記
+あらゆる慣性基準系において、力学の法則は同じであることが経験則として知られている。いいかえると、力学を記
 述する方程式は、異なる慣性基準系の座標と時間を使って書いても、すべて同じ形に
-なる。これをGalileiの相対性原理と呼ぶ。以下では、Lagrangianに対してGalilei変換を適用させ、
-作用を境界項を除いて不変にすることを要請して許される関数形を調べる。(\ref{sec:invariance}節)
-この要請をすることで、Euler-Lagrange方程式はGalilei変換に対して不変になり、したがってGalileiの相対性原理を満たせるからである。
+なる。これをGalileiの相対性原理と呼ぶ。
+\\以下では、Lagrangianに対してGalileiブーストを適用させ、\ref{sec:invariance}節で定義したLagrangianの対称性から許される関数形を求める。
+この要請をすることで、Euler-Lagrange方程式はGalileiブーストに対して不変になり、したがってGalileiの相対性原理を満たせるからである。
 
 おさらいとして、ここまでの議論で代表のLagrangianの関数形は
 \[
@@ -1287,11 +1437,35 @@ m_1A_2=m_2A_1 \quad \Leftrightarrow\quad \frac{A_1}{m_1}=\frac{A_2}{m_2}
 となる。
 静電気相互作用の形は、Coulombによるねじり天秤を用いた帯電球同士の引き合い、反発による測定で、万有引力同様距離の2乗(すなわち対応するポテンシャル$V$は1乗)に反比例することが確かめられた。また各物体の電荷量に比例することが経験的に知られた。
 
-さらに重要なことに、今回採用した同時刻の粒子位置だけに依存するポテンシャル模型では、
-相互作用は瞬時に伝わるものとして記述される。
+\subsection{相互作用の伝搬速度}
+今回採用した同時刻の粒子位置だけに依存するポテンシャル模型では
+相互作用は瞬時に伝わるものとして記述される。なぜならば、ポテンシャルの関数形を見れば粒子の位置をずらすと、位置が変わったことによる
+影響が瞬時にもう一方の粒子に伝わるからである。仮にこの基本相互作用の伝搬速度が有限であるとすると、Galileiの相対性原理に反することが分かる。以下にその説明をする。
+
+K系で相互作用の速度が有限値$c$であるとする。この時、$\tau$秒かけて粒子2から1へ相互作用の影響が伝わるとする。式で書くと時刻$t$に粒子1に働く粒子2から1への力は
+\[
+\bm{F}_{12}=\bm{F}_{12}(\bm{r}_1(t)-\bm{r}_2(t-\tau)) \quad \tau=\frac{|\bm{r}_1(t)-\bm{r}_2(t-\tau)|}{c}
+\]
+この相互作用をK系に対して一定の速度$\bm{V}$で運動している慣性系K'から見てどうなるかを見る。(\refeq{eq:Galilei Trans})(\refeq{eq:Galilei Trans2})のGalileiブーストの式から、
+\begin{align*}
+\bm{r}_1'(t')&=\bm{r}_1(t)-\bm{V}t
+\\\bm{r}_2'(t'-\tau')&=\bm{r}_2(t-\tau)-\bm{V}(t-\tau)
+\\t=t' \quad \tau&=\tau'
+\end{align*}
+となる。これらの式から力は
+\[
+\bm{F}_{12}(\bm{r}_1(t)-\bm{r}_2(t-\tau))=\bm{F}_{12}(\bm{r}_1'(t')-\bm{r}_2'(t'-\tau')+\bm{V}\tau')\ne \bm{F}_{12}(\bm{r}_1'(t')-\bm{r}_2'(t'-\tau'))
+\]
+となり、力はGalileiブーストに対して不変でない。不変でないというのは、K'系でもK系と同じ手続きで力を書けないという意味である。なぜならば、法則がどの慣性系
+でも同じならば、K'系でも力は$\bm{F}_{12}(\bm{r}_1'(t')-\bm{r}_2'(t'-\tau'))$と書けるからである。
+しかし、実際には$\bm{V}$が関数形に入っているため、不変でない。
+
+したがって、このような有限速度の相互作用はGalileiの相対性原理に反する。ここで、$c\rightarrow \infty$とすれば$\tau \rightarrow 0$
+となるため、この時力はGalileiブーストに対して不変になりGalileiの相対性原理を満たす。
+このようにして、Galileiの相対性原理に反しないように位置依存の相互作用はその伝搬速度が瞬時でなければならない。
 
 \section{孤立系でないLagrangian(Newtonの運動方程式導出)}
-ようやくこれが古典力学のLagrange形式の最後の節だ。今までは孤立系のLagrangianについて議論してきたが、
+これが非相対論的力学のLagrange形式の最後の節だ。今までは孤立系のLagrangianについて議論してきたが、
 一般の力学系を調べるとき、一般には孤立系でない。そこで、この場合にも適用できるLagrangianを考える。
 
 今、孤立系でない系Aが与えられた外場(系B)の中を運動しているとする。
@@ -1327,7 +1501,7 @@ m_i\ddot{\bm{x}}_i=-\pdv{V(\bm{x},t)}{\bm{x}_i}=\bm{F}_i
 \section{一般のGalilei変換の導出}
 \label{sec:Hosoku}
 \textbf{証明}
-\\\ref{sec:Spacetime}節より、古典時空は任意の二事象についてK系とK'系において \(t'_2-t'_1=t_2-t_1\) なので、\(t'-t\) は事象によらない定数
+\\\ref{sec:Spacetime}節より、非相対論的時空は任意の二事象についてK系とK'系において \(t'_2-t'_1=t_2-t_1\) なので、\(t'-t\) は事象によらない定数
 であり、
 \[
 t'=t+b
@@ -1421,6 +1595,100 @@ t'&=t+b
 \end{align}
 となる。この変換は空間並進、時間並進、空間回転、Galileiブーストのすべてを含んでいる。$\square$
 
+\section{拘束条件下での汎関数の停留値問題}
+拘束条件
+\begin{equation}
+C_\gamma(q_1(t),\cdots,q_N(t),t)=0 \quad (\gamma=1,2,\cdots,\Gamma<N)
+\label{eq:Constraint}
+\end{equation}
+の下で作用
+\[
+S[q]=\intS\La(q,\dot{q},t)
+\]
+が停留する条件はLagrangianを
+\[
+\tilde{\La}(q,\dot{q},\lambda,t):=\La(q,\dot{q},t)+\sum_{\gamma=1}^{\Gamma}\lambda_\gamma C_\gamma(q,t)
+\]
+としたとき、次の$N+\Gamma$個の$q,\lambda$を引数とした汎関数
+\[
+\tilde{S}[q,\lambda]:=\intS\tilde{\La}(q,\dot{q},\lambda,t)
+\]
+が停留する条件、すなわち
+\begin{align}
+\frac{d}{dt}\pdv{\tilde{\La}}{\dot{q}_i}-\pdv{\tilde{\La}}{q_i}&=0 \quad (i=1,2,\cdots,N)
+\label{eq:ELeq2}
+\\ \pdv{\tilde{\La}}{\lambda_\gamma}&=0 \quad (\gamma=1,2,\cdots,\Gamma)
+\label{eq:ELeq3}
+\end{align}
+である。
+\\\textbf{証明}
+
+今、$S[q]$が拘束条件(\refeq{eq:Constraint})の下で停留すると仮定。すなわち、停留する軌道において
+\[
+\delta S[q]=S[q+\epsilon f]-S[q]=\mathcal{O}(\epsilon^2)
+\]
+となることを仮定する。拘束条件(\refeq{eq:Constraint})は
+\begin{equation}
+\delta C_\gamma:=C_\gamma(q+\epsilon f,t)-C_\gamma(q,t)=\sum_{i=1}^{N}\pdv{C_\gamma}{q_i}f_i\epsilon+\mathcal{O}(\epsilon^2)=0
+\label{eq:Kousoku}
+\end{equation}
+を満たす。ここで、$\lambda_\gamma(t)\quad(\gamma=1,\cdots,\Gamma)$を任意の滑らかな関数として
+\[
+\tilde{S}[q,\lambda]:=S[q]+\intS\sum_{\gamma=1}^{\Gamma}\lambda_\gamma(t) C_\gamma(q,t)
+\]
+とおく。(ただし、$f(t_i)=0=f(t_f)$)そうすると、
+\[
+\tilde{S}[q+\epsilon f,\lambda]-\tilde{S}[q,\lambda]=\delta S[q]+\intS\sum_{\gamma=1}^{\Gamma}\lambda_\gamma(t)\delta C_\gamma(q,t)
+\]
+となる。$\delta C_\gamma=0$及び、$S[q]$が停留するという仮定から、
+\[
+\tilde{S}[q+\epsilon f,\lambda]-\tilde{S}[q,\lambda]=\mathcal{O}(\epsilon^2)
+\]
+となることが必要である。以下ではこの必要条件を求める。\ref{sec:Henbun}節と同様の計算を行うと、
+\[
+\tilde{S}[q+\epsilon f,\lambda]-\tilde{S}[q,\lambda]=\epsilon\intS\sum_{i=1}^{N}\left(\pdv{\La}{q_i}-\frac{d}{dt}\pdv{\La}{\dot{q}_i}+\sum_{\gamma=1}^{\Gamma}\lambda_\gamma\pdv{C_\gamma}{q_i}\right)f_i+\mathcal{O}(\epsilon^2)
+\]
+となる。(\refeq{eq:Kousoku})式を両辺$\epsilon$で割り、$\epsilon\rightarrow0$とすると、
+\[
+\sum_{i=1}^{N}\pdv{C_\gamma}{q_i}f_i=0 \quad (\gamma=1,\cdots,\Gamma)
+\]
+となる。これは$\Gamma$本の連立1次方程式である。今、$\Gamma\times N$行列$\left(\pdv{C_\gamma}{q_i}\right)$のRank(階数)が$\Gamma$であると仮定する。
+そうすると、上の$\Gamma$本の連立方程式を$f_i$について解くと、$\Gamma$個の$f$
+\[
+f_{i_a} \quad (a=1,2,\cdots,\Gamma)
+\]
+は独立でなく、独立な$f$は$N-\Gamma$個の$f_{i_b'} \quad (b=1,\cdots,N-\Gamma)$となる。ここで、$\{ i_1',\cdots,i_{N-\Gamma}'\} = \{ 1,\cdots,N \} \verb|\| \{ i_1,\cdots,i_\Gamma \}$ である。
+これより、
+\begin{align*}
+\tilde{S}[q+\epsilon f,\lambda]-\tilde{S}[q,\lambda]&=\epsilon\intS\sum_{a=1}^{\Gamma}\left(\pdv{\La}{q_{i_a}}-\frac{d}{dt}\pdv{\La}{\dot{q}_{i_a}}+\sum_{\gamma=1}^{\Gamma}\lambda_\gamma\pdv{C_\gamma}{q_{i_a}}\right)f_{i_a}
+\\&+\epsilon\intS\sum_{b=1}^{N-\Gamma}\left(\pdv{\La}{q_{i_b'}}-\frac{d}{dt}\pdv{\La}{\dot{q}_{i_b'}}+\sum_{\gamma=1}^{\Gamma}\lambda_\gamma\pdv{C_\gamma}{q_{i_b'}}\right)f_{i_b'}+\mathcal{O}(\epsilon^2)
+\end{align*}
+ここで、$\lambda_\gamma(t) \quad (\gamma=1,\cdots,\Gamma)$は任意より、
+\[
+\pdv{\La}{q_{i_a}}-\frac{d}{dt}\pdv{\La}{\dot{q}_{i_a}}+\sum_{\gamma=1}^{\Gamma}\lambda_\gamma\pdv{C_\gamma}{q_{i_a}}=0 \quad (a=1,\cdots,\Gamma)
+\]
+を満たすような$\lambda_\gamma$を取る。すると、$f_{i_b'}$は独立な任意関数より、$\tilde{S}[q+\epsilon f,\lambda]-\tilde{S}[q,\lambda]=\mathcal{O}(\epsilon^2)$
+となるには
+\[
+\pdv{\La}{q_{i_b'}}-\frac{d}{dt}\pdv{\La}{\dot{q}_{i_b'}}+\sum_{\gamma=1}^{\Gamma}\lambda_\gamma\pdv{C_\gamma}{q_{i_b'}}=0 \quad (b=1,\cdots,N-\Gamma)
+\]
+となることが必要。以上のことをまとめると、
+\begin{equation}
+\pdv{\La}{q_i}-\frac{d}{dt}\pdv{\La}{\dot{q}_i}+\sum_{\gamma=1}^{\Gamma}\lambda_\gamma\pdv{C_\gamma}{q_i}=0 \quad (i=1,\cdots,N)
+\label{eq:star}
+\end{equation}
+これが$S[q]$が拘束条件(\ref{eq:Constraint})の下で停留となる時、$\tilde{S}[q+\epsilon f,\lambda]-\tilde{S}[q,\lambda]=\mathcal{O}(\epsilon^2)$となるための必要条件である。
+逆に(\refeq{eq:star})が成り立つ時、
+\[
+\tilde{S}[q+\epsilon f,\lambda]-\tilde{S}[q,\lambda]=\mathcal{O}(\epsilon^2)
+\]
+であり、
+(\refeq{eq:Constraint})を満たす$f_1,\cdots,f_N$に対して
+\[
+\tilde{S}[q+\epsilon f,\lambda]-\tilde{S}[q,\lambda]=\delta S[q]+\intS\sum_{\gamma=1}^{\Gamma}\lambda_\gamma\delta C_\gamma=\delta S[q]=\mathcal{O}(\epsilon^2)
+\]
+となり、拘束条件(\refeq{eq:Constraint})のもとで$S[q]$が停留する。
+\\以上より、拘束条件(\refeq{eq:Constraint})と(\refeq{eq:star})は(\refeq{eq:ELeq2})(\refeq{eq:ELeq3})と同じであることより、示された。$\square$
 
 \addcontentsline{toc}{section}{参考文献}
 \begin{thebibliography}{99}
@@ -1429,7 +1697,7 @@ t'&=t+b
 \bibitem{landau2}
 「場の古典論」ランダウ、リフシッツ 著 $\quad$ (第1章の特殊相対論と古典力学の時空の違いを参考にした)
 \bibitem{Watanabe}
-「解析力学」渡辺 悠樹 著 $\quad$ (第4章の対称性の数学的なところを参考にした)
+「解析力学」渡辺 悠樹 著 $\quad$ (第4章の対称性と第3章の拘束条件の数学的なところを参考にした)
 \bibitem{Hatake}
 「解析力学」畑浩之 著 $\quad$ (第2章の粒子間の距離無限大で相互作用が0となるところを参考にした)
 \bibitem{Harashima}
